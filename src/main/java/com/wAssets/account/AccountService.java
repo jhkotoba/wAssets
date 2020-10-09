@@ -1,27 +1,29 @@
 package com.wAssets.account;
 
-import java.util.HashMap;
-import java.util.Map;
-
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 import com.wAssets.common.Constant;
+import com.wAssets.common.SessionModel;
 import com.wAssets.common.Utils;
 
 import reactor.core.publisher.Mono;
+import reactor.util.function.Tuple2;
 
 @Component
 public class AccountService {
+	
+	@Autowired
+	private AccountRepository accountRepository;
 	
 	/**
 	 * 계좌등록 밸류데이션
 	 * @param map
 	 * @return
 	 */
-	public Mono<AccountModel> vaildAccount(AccountModel model){
+	public Mono<AccountModel> vaildAccount(AccountModel model){		
 		try {
-			
 			//빈값 체크			
 			if(StringUtils.isEmpty(model.getAcctTgtCd()) 		||
 					StringUtils.isEmpty(model.getAcctDivCd()) 	|| 
@@ -32,12 +34,20 @@ public class AccountService {
 					StringUtils.isEmpty(model.getUseYn())
 			) Mono.error(new RuntimeException(Constant.RESULT_CODE_VALIDATION_ACCOUNT));
 			
-			//날짜형식 체크(YYYYMMDD)
-			if(Utils.isNotDate(model.getCratDt(), Constant.YYYYMMDD) 		||
-					Utils.isNotDate(model.getEpyDt(), Constant.YYYYMMDD)					
-			) Mono.error(new RuntimeException(Constant.RESULT_CODE_VALIDATION_ACCOUNT));			
+			//생성일 날짜형식 체크(YYYYMMDD)
+			if(Utils.isNotDate(model.getCratDt(), Constant.YYYYMMDD)) {
+				Mono.error(new RuntimeException(Constant.RESULT_CODE_VALIDATION_ACCOUNT));
+				
+			//만기일 날짜형식 체크(YYYYMMDD)
+			}else if(Constant.Y.equals(model.getEpyDtUseYn())) {
+				if(Utils.isNotDate(model.getEpyDt(), Constant.YYYYMMDD)) {
+					Mono.error(new RuntimeException(Constant.RESULT_CODE_VALIDATION_ACCOUNT));
+				}
+			}			
 			
-			return Mono.defer(() -> Mono.just(model));
+			//체크완료
+			return Mono.create(callback -> callback.success(model));
+			//return Mono.defer(() -> Mono.just(model));
 		}catch(Exception e) {
 			return Mono.error(new RuntimeException(Constant.RESULT_CODE_UNKNOWN_ERROR));
 		}
@@ -48,8 +58,14 @@ public class AccountService {
 	 * @param map
 	 * @return
 	 */
-	public Mono<AccountModel> insertAccount(AccountModel model){
-		return Mono.just(model);
+	public Mono<Integer> insertAccount(Tuple2<AccountModel, SessionModel> tuple){
+		try {
+			AccountModel model = tuple.getT1();			
+			model.setUserSeq(tuple.getT2().getUserSeq());
+			return accountRepository.insertAccount(model);
+		}catch (Exception e) {			
+			return Mono.error(new RuntimeException(Constant.RESULT_CODE_REPOSITORY_ERROR));
+		}
 	}
 
 }

@@ -12,8 +12,12 @@ public interface Constant {
 	public static final String HHMI = "(0[0-9]|1[0-9]|2[0-3])([0-5][0-9])";	
 	
 	/* common */
+	public static final String Y = "Y";
+	public static final String N = "N";
 	public static final String RESULT_CODE_SUCCESS = "0000";
 	public static final String RESULT_CODE_SERVER_ERROR = "9000";
+	public static final String RESULT_CODE_REPOSITORY_ERROR = "9001";
+	public static final String RESULT_CODE_INSERT_EMPTY_ERROR = "9001";
 	public static final String RESULT_CODE_UNKNOWN_ERROR = "9444";
 	
 	/* member */

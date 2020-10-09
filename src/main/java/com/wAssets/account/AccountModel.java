@@ -17,33 +17,9 @@ public class AccountModel {
 	//계좌번호
 	private String acctNum;
 	
-	//글자색상
-	private String fontClor;
+	//계좌명
+	private String acctNm;
 	
-	//배경색상
-	private String bkgdClor;
-	
-	//생성일
-	private String cratDt;
-	
-	//만기일 사용여부	
-	private String epyDtUseYn;
-	
-	//만기일
-	private String epyDt;
-	
-	//사용여부
-	private String useYn;
-	
-	//비고
-	private String rmk;
-	
-	//등록일시
-	private String regDttm;
-	
-	//수정일시
-	private String modDttm;
-
 	public Integer getAcctSeq() {
 		return acctSeq;
 	}
@@ -82,6 +58,14 @@ public class AccountModel {
 
 	public void setAcctNum(String acctNum) {
 		this.acctNum = acctNum;
+	}
+
+	public String getAcctNm() {
+		return acctNm;
+	}
+
+	public void setAcctNm(String acctNm) {
+		this.acctNm = acctNm;
 	}
 
 	public String getFontClor() {
@@ -155,6 +139,34 @@ public class AccountModel {
 	public void setModDttm(String modDttm) {
 		this.modDttm = modDttm;
 	}
+
+	//글자색상
+	private String fontClor;
+	
+	//배경색상
+	private String bkgdClor;
+	
+	//생성일
+	private String cratDt;
+	
+	//만기일 사용여부	
+	private String epyDtUseYn;
+	
+	//만기일
+	private String epyDt;
+	
+	//사용여부
+	private String useYn;
+	
+	//비고
+	private String rmk;
+	
+	//등록일시
+	private String regDttm;
+	
+	//수정일시
+	private String modDttm;
+
 }
 	
 	
