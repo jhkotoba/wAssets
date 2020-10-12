@@ -38,13 +38,13 @@ public class AccountHandler {
 				
 				if(count > 0) {
 					//성공
-					result.setResultCode(Constant.RESULT_CODE_SUCCESS);
+					result.setResultCode(Constant.CODE_SUCCESS);
 					return ServerResponse.ok()
 						.contentType(MediaType.APPLICATION_JSON)
 						.body(BodyInserters.fromValue(result));
 				}else {
 					//insert 실패
-					result.setResultCode(Constant.RESULT_CODE_INSERT_EMPTY_ERROR);
+					result.setResultCode(Constant.CODE_INSERT_EMPTY_ERROR);
 					return ServerResponse.ok()
 						.contentType(MediaType.APPLICATION_JSON)
 						.body(BodyInserters.fromValue(result));

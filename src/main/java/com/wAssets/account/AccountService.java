@@ -32,24 +32,24 @@ public class AccountService {
 					StringUtils.isEmpty(model.getEpyDtUseYn()) 	|| 
 					StringUtils.isEmpty(model.getEpyDt()) 		|| 
 					StringUtils.isEmpty(model.getUseYn())
-			) Mono.error(new RuntimeException(Constant.RESULT_CODE_VALIDATION_ACCOUNT));
+			) Mono.error(new RuntimeException(Constant.CODE_VALIDATION_ACCOUNT));
 			
 			//생성일 날짜형식 체크(YYYYMMDD)
 			if(Utils.isNotDate(model.getCratDt(), Constant.YYYYMMDD)) {
-				Mono.error(new RuntimeException(Constant.RESULT_CODE_VALIDATION_ACCOUNT));
+				Mono.error(new RuntimeException(Constant.CODE_VALIDATION_ACCOUNT));
 				
 			//만기일 날짜형식 체크(YYYYMMDD)
 			}else if(Constant.Y.equals(model.getEpyDtUseYn())) {
 				if(Utils.isNotDate(model.getEpyDt(), Constant.YYYYMMDD)) {
-					Mono.error(new RuntimeException(Constant.RESULT_CODE_VALIDATION_ACCOUNT));
+					Mono.error(new RuntimeException(Constant.CODE_VALIDATION_ACCOUNT));
 				}
 			}			
 			
 			//체크완료
-			return Mono.create(callback -> callback.success(model));
+			return Mono.create(sink -> sink.success(model));
 			//return Mono.defer(() -> Mono.just(model));
 		}catch(Exception e) {
-			return Mono.error(new RuntimeException(Constant.RESULT_CODE_UNKNOWN_ERROR));
+			return Mono.error(new RuntimeException(Constant.CODE_UNKNOWN_ERROR));
 		}
 	}
 	
@@ -64,7 +64,7 @@ public class AccountService {
 			model.setUserSeq(tuple.getT2().getUserSeq());
 			return accountRepository.insertAccount(model);
 		}catch (Exception e) {			
-			return Mono.error(new RuntimeException(Constant.RESULT_CODE_REPOSITORY_ERROR));
+			return Mono.error(new RuntimeException(Constant.CODE_REPOSITORY_ERROR));
 		}
 	}
 

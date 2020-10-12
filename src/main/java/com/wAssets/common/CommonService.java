@@ -19,7 +19,7 @@ public class CommonService {
 	 * @param request
 	 * @return
 	 */
-	public Mono<SessionModel> getSession(ServerRequest request){		
+	public Mono<SessionModel> getSession(ServerRequest request){
 		return WebClient
 	        .create()
 	        .post()

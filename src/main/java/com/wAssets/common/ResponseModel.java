@@ -27,5 +27,4 @@ public class ResponseModel<T> {
 	public void setResultCode(String resultCode) {
 		this.resultCode = resultCode;
 	}
-
 }
