@@ -31,10 +31,10 @@ public class AccountHandler {
 			.flatMap(accountService::vaildAccount)
 			//세션조회
 			.zipWith(commonService.getSession(request))
-			//
-			.flatMap(accountService::insertAccount)
 			//계좌 저장
-			.flatMap(count-> {
+			.flatMap(accountService::insertAccount)
+			//성공확인
+			.flatMap(count -> {
 				
 				if(count > 0) {
 					//성공

@@ -22,7 +22,7 @@ public class AccountService {
 	 * @param map
 	 * @return
 	 */
-	public Mono<AccountModel> vaildAccount(AccountModel model){		
+	public Mono<AccountModel> vaildAccount(AccountModel model){
 		try {
 			//빈값 체크			
 			if(StringUtils.isEmpty(model.getAcctTgtCd()) 		||
@@ -47,7 +47,7 @@ public class AccountService {
 			
 			//체크완료
 			return Mono.create(sink -> sink.success(model));
-			//return Mono.defer(() -> Mono.just(model));
+			//return Mono.defer(() -> Mono.just(model));			
 		}catch(Exception e) {
 			return Mono.error(new RuntimeException(Constant.CODE_UNKNOWN_ERROR));
 		}
@@ -67,5 +67,4 @@ public class AccountService {
 			return Mono.error(new RuntimeException(Constant.CODE_REPOSITORY_ERROR));
 		}
 	}
-
 }

@@ -25,8 +25,7 @@
 		</dependency>
 		<dependency>
 			<groupId>org.mariadb</groupId>
-			<artifactId>r2dbc-mariadb</artifactId>
-			<version>0.8.3-beta1</version>
+			<artifactId>r2dbc-mariadb</artifactId>			
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
