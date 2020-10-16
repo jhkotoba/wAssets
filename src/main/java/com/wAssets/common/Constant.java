@@ -22,8 +22,14 @@ public interface Constant {
 	public static final String CODE_UNKNOWN_ERROR = "9444";
 	
 	/* member */
+	public static final String TOKEN = "SESSION_TOKEN";	
+	public static final String SIGN = "WMEMBER";
+	public static final String PASSWORD_FORMAT = "%0128x";
+	public static final String JWT_SUBJECT = "wmember";
+	
 	public static final String CODE_DIFF_PASSWORD = "3001";
 	public static final String CODE_NO_USER = "3002";
+	public static final String CODE_LOING_CHECK_ERROR = "3003";
 	
 	/* assets */
 	public static final String CODE_VALIDATION_ACCOUNT = "4001";

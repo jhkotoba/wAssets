@@ -12,7 +12,7 @@ import reactor.core.publisher.Mono;
 public class CommonService {
 	
 	@Autowired
-	private Gateway gateway;
+	private Modules modules;
 	
 	/**
 	 * 세션정보 조회
@@ -23,7 +23,7 @@ public class CommonService {
 		return WebClient
 	        .create()
 	        .post()
-	        .uri(gateway.getUrl() + "/api/member/getInnerSession")
+	        .uri(modules.getMemberUrl() + "/api/member/getInnerSession")
 	        .cookies(cookies -> {
 	        	for (String key : request.cookies().keySet()) {	        		
 					cookies.add(key, request.cookies().get(key).get(0).getValue());
