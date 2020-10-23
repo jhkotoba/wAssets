@@ -16,6 +16,9 @@ public class AccountRouter {
 			return RouterFunctions			
 				//계좌등록
 				.route(RequestPredicates.POST("/api/assets/saveAccount")
-					.and(RequestPredicates.accept(MediaType.APPLICATION_JSON)), accountHandler::saveAccount);
+					.and(RequestPredicates.accept(MediaType.APPLICATION_JSON)), accountHandler::saveAccount)
+				//계좌목록조회
+				.andRoute(RequestPredicates.GET("/api/assets/getAccountList")
+						.and(RequestPredicates.accept(MediaType.APPLICATION_JSON)), accountHandler::getAccountList);
 		}
 }

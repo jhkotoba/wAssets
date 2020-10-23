@@ -1,5 +1,8 @@
 package com.wAssets.account;
 
+import java.util.List;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
@@ -11,6 +14,7 @@ import com.wAssets.common.CommonService;
 import com.wAssets.common.Constant;
 import com.wAssets.common.ResponseModel;
 
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @Component
@@ -56,5 +60,69 @@ public class AccountHandler {
 						.contentType(MediaType.APPLICATION_JSON)
 						.body(BodyInserters.fromValue(result));
 			});
+	}
+	
+	public Mono<ServerResponse> getAccountList(ServerRequest request){
+		System.out.println("HANDLER getAccountList");
+		
+//		Mono<?> f = accountService.selectAccountList()
+//		.doOnNext(onNext -> System.out.println("onNext:"+onNext))
+//		.flatMap(ff -> {
+//			return Mono.just(ff);
+//		});
+		//.subscribe();
+		
+//		Flux<?> flux = accountService.selectAccountList();
+//		Mono<List<?>> m = flux.toIterable().toList();
+		
+		Flux<Map<String, Object>> flux = accountService.selectAccountList();
+		Mono<List<Map<String, Object>>> m =  flux.collectList();
+		
+		return ServerResponse.ok()
+				.contentType(MediaType.APPLICATION_JSON)
+				.body(BodyInserters.fromValue(m));
+		
+		
+		
+		//return request.bodyToMono(AccountModel.class)
+			//세션조회
+			//.zipWith(commonService.getSession(request))
+//			.doOnNext(onNext -> System.out.println(onNext))
+//			//계좌목록 조회
+//			.flatMap(tuple -> {
+//				
+//				System.out.println("tuple:" +tuple);
+//				return ServerResponse.ok()
+//						.contentType(MediaType.APPLICATION_JSON)
+//						.body(BodyInserters.fromValue((accountService.selectAccountList(tuple))));
+//				
+//				
+//				
+//			});
+		
+//		commonService.getSession(request)
+//			.flatMap(sm -> {
+//				AccountModel am = new AccountModel();
+//				return Mono.just(am.setUserSeq(sm.getUserSeq()));
+//			});
+		//Flux<?> f = commonService.getSession(request).flatMap(accountService::selectAccountList);
+			//.flatMap(sm -> {
+			//	AccountModel am = new AccountModel();
+			//	am.setUserSeq(sm.getUserSeq());
+			//	return Mono.just(am);
+			//	///return Mono.defer(() -> Mono.just(am));
+			//}).flatMap(accountService::selectAccountList);
+		
+		//return request.bodyToMono(AccountModel.class)
+		
+//		Flux.just(commonService.getSession(request))
+//				.flatMap(accountService::selectAccountList);
+//		
+//		return ServerResponse.ok()						
+//				.contentType(MediaType.APPLICATION_JSON)
+//				.body(BodyInserters.fromValue(f));
+			
+		
+		//return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON).body(Flux.just("1","2","3"), String.class);
 	}
 }

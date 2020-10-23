@@ -1,8 +1,11 @@
 package com.wAssets.account;
 
+import java.util.Map;
+
 import org.springframework.data.r2dbc.core.DatabaseClient;
 import org.springframework.stereotype.Repository;
 
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @Repository
@@ -14,6 +17,11 @@ public class AccountRepository {
 		this.client = databaseClient;
 	}
 	
+	/**
+	 * 계좌저장
+	 * @param model
+	 * @return
+	 */
 	public Mono<Integer> insertAccount(AccountModel model){
 		
 		StringBuilder query = new StringBuilder("INSERT INTO ACCOUNT(");
@@ -49,4 +57,16 @@ public class AccountRepository {
 			.bind("epyDt", model.getEpyDt())
 			.bind("useYn", model.getUseYn()).fetch().rowsUpdated();
 	}
+	
+//	public Flux<?> selectAccountList(AccountModel model){
+	public Flux<Map<String, Object>> selectAccountList(){
+		System.out.println("REP selectAccountList");
+		StringBuilder sql = new StringBuilder("SELECT * FROM ACCOUNT WHERE 1=1");
+		//sql.append(" AND USER_SEQ = 1");//.append(model.getUserSeq());
+		
+		System.out.println(sql.toString());
+		
+		return client.execute(sql.toString()).fetch().all().doOnNext(onNext -> System.out.println(onNext));
+	}
+	
 }

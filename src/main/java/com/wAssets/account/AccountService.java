@@ -1,5 +1,7 @@
 package com.wAssets.account;
 
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
@@ -8,6 +10,7 @@ import com.wAssets.common.Constant;
 import com.wAssets.common.SessionModel;
 import com.wAssets.common.Utils;
 
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.util.function.Tuple2;
 
@@ -47,7 +50,7 @@ public class AccountService {
 			
 			//체크완료
 			return Mono.create(sink -> sink.success(model));
-			//return Mono.defer(() -> Mono.just(model));			
+			//return Mono.defer(() -> Mono.just(model));
 		}catch(Exception e) {
 			return Mono.error(new RuntimeException(Constant.CODE_UNKNOWN_ERROR));
 		}
@@ -64,7 +67,20 @@ public class AccountService {
 			model.setUserSeq(tuple.getT2().getUserSeq());
 			return accountRepository.insertAccount(model);
 		}catch (Exception e) {			
-			return Mono.error(new RuntimeException(Constant.CODE_REPOSITORY_ERROR));
+			return Mono.error(new RuntimeException(Constant.CODE_REPOSITORY_ERROR, e));
+		}
+	}
+	
+	//public Flux<?> selectAccountList(AccountModel model){
+	public Flux<Map<String, Object>> selectAccountList(){
+		System.out.println("SERVICE selectAccountList");
+		try {
+			//AccountModel model = tuple.getT1();			
+			//model.setUserSeq(tuple.getT2().getUserSeq());
+			//return accountRepository.selectAccountList(model);
+			return accountRepository.selectAccountList();
+		}catch (Exception e) {
+			return Flux.error(new RuntimeException(Constant.CODE_REPOSITORY_ERROR, e));
 		}
 	}
 }
