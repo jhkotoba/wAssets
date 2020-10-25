@@ -1,9 +1,10 @@
 package com.wAssets.account;
 
-import java.util.Map;
-
 import org.springframework.data.r2dbc.core.DatabaseClient;
 import org.springframework.stereotype.Repository;
+import org.springframework.util.MultiValueMap;
+
+import com.wAssets.common.Utils;
 
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -56,17 +57,33 @@ public class AccountRepository {
 			.bind("epyDtUseYn", model.getEpyDtUseYn())
 			.bind("epyDt", model.getEpyDt())
 			.bind("useYn", model.getUseYn()).fetch().rowsUpdated();
+	}	
+
+	/**
+	 * 계좌목록 조회
+	 * @param params
+	 * @param userSeq
+	 * @return
+	 */
+	public Flux<AccountModel> selectAccountList(MultiValueMap<String, String> params, Integer userSeq){
+		StringBuilder sql = new StringBuilder("SELECT ");
+		sql.append("ACCT_SEQ ");
+		sql.append(",ACCT_TGT_CD ");
+		sql.append(",ACCT_DIV_CD ");
+		sql.append(",ACCT_NUM ");
+		sql.append(",ACCT_NM ");
+		sql.append(",FONT_CLOR ");
+		sql.append(",BKGD_CLOR ");
+		sql.append(",CRAT_DT ");
+		sql.append(",EPY_DT_USE_YN ");
+		sql.append(",EPY_DT ");
+		sql.append(",USE_YN ");
+		sql.append(",DATE_FORMAT(REG_DTTM, '%Y-%m-%d %H:%i:%S') ");
+		sql.append(",DATE_FORMAT(MOD_DTTM, '%Y-%m-%d %H:%i:%S') ");
+		sql.append("FROM ACCOUNT WHERE 1=1 AND USER_SEQ = ").append(userSeq);
+		return client.execute(sql.toString()).as(AccountModel.class)
+			.map((row, rowMetadata) ->  Utils.converterCamelCaseModel(new AccountModel(), row,rowMetadata, true))		
+			.all()
+			.onErrorResume(error -> Mono.error(new RuntimeException(error.getMessage(), error)));
 	}
-	
-//	public Flux<?> selectAccountList(AccountModel model){
-	public Flux<Map<String, Object>> selectAccountList(){
-		System.out.println("REP selectAccountList");
-		StringBuilder sql = new StringBuilder("SELECT * FROM ACCOUNT WHERE 1=1");
-		//sql.append(" AND USER_SEQ = 1");//.append(model.getUserSeq());
-		
-		System.out.println(sql.toString());
-		
-		return client.execute(sql.toString()).fetch().all().doOnNext(onNext -> System.out.println(onNext));
-	}
-	
 }

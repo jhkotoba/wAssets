@@ -20,6 +20,33 @@ public class AccountModel {
 	//계좌명
 	private String acctNm;
 	
+	//글자색상
+	private String fontClor;
+	
+	//배경색상
+	private String bkgdClor;
+	
+	//생성일
+	private String cratDt;
+	
+	//만기일 사용여부	
+	private String epyDtUseYn;
+	
+	//만기일
+	private String epyDt;
+	
+	//사용여부
+	private String useYn;
+	
+	//비고
+	private String rmk;
+	
+	//등록일시
+	private String regDttm;
+	
+	//수정일시
+	private String modDttm;
+	
 	public Integer getAcctSeq() {
 		return acctSeq;
 	}
@@ -140,33 +167,13 @@ public class AccountModel {
 		this.modDttm = modDttm;
 	}
 
-	//글자색상
-	private String fontClor;
-	
-	//배경색상
-	private String bkgdClor;
-	
-	//생성일
-	private String cratDt;
-	
-	//만기일 사용여부	
-	private String epyDtUseYn;
-	
-	//만기일
-	private String epyDt;
-	
-	//사용여부
-	private String useYn;
-	
-	//비고
-	private String rmk;
-	
-	//등록일시
-	private String regDttm;
-	
-	//수정일시
-	private String modDttm;
-
+	@Override
+	public String toString() {
+		return "AccountModel [acctSeq=" + acctSeq + ", userSeq=" + userSeq + ", acctTgtCd=" + acctTgtCd + ", acctDivCd="
+				+ acctDivCd + ", acctNum=" + acctNum + ", acctNm=" + acctNm + ", fontClor=" + fontClor + ", bkgdClor="
+				+ bkgdClor + ", cratDt=" + cratDt + ", epyDtUseYn=" + epyDtUseYn + ", epyDt=" + epyDt + ", useYn="
+				+ useYn + ", rmk=" + rmk + ", regDttm=" + regDttm + ", modDttm=" + modDttm + "]";
+	}
 }
 	
 	

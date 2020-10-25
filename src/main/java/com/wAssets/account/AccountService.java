@@ -1,10 +1,9 @@
 package com.wAssets.account;
 
-import java.util.Map;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
+import org.springframework.web.reactive.function.server.ServerRequest;
 
 import com.wAssets.common.Constant;
 import com.wAssets.common.SessionModel;
@@ -63,7 +62,7 @@ public class AccountService {
 	 */
 	public Mono<Integer> insertAccount(Tuple2<AccountModel, SessionModel> tuple){
 		try {
-			AccountModel model = tuple.getT1();			
+			AccountModel model = tuple.getT1();
 			model.setUserSeq(tuple.getT2().getUserSeq());
 			return accountRepository.insertAccount(model);
 		}catch (Exception e) {			
@@ -71,14 +70,15 @@ public class AccountService {
 		}
 	}
 	
-	//public Flux<?> selectAccountList(AccountModel model){
-	public Flux<Map<String, Object>> selectAccountList(){
-		System.out.println("SERVICE selectAccountList");
+	/**
+	 * 계좌목록 조회
+	 * @param request
+	 * @param session
+	 * @return
+	 */
+	public Flux<AccountModel> selectAccountList(ServerRequest request, SessionModel session){
 		try {
-			//AccountModel model = tuple.getT1();			
-			//model.setUserSeq(tuple.getT2().getUserSeq());
-			//return accountRepository.selectAccountList(model);
-			return accountRepository.selectAccountList();
+			return accountRepository.selectAccountList(request.queryParams(), session.getUserSeq());
 		}catch (Exception e) {
 			return Flux.error(new RuntimeException(Constant.CODE_REPOSITORY_ERROR, e));
 		}
