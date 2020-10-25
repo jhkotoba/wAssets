@@ -82,6 +82,7 @@ public class AccountHandler {
 			.flatMap(fm -> {
 				//응답
 				result.setData(fm);
+				result.setResultCode(Constant.CODE_SUCCESS);
 				return ServerResponse.ok()
 					.contentType(MediaType.APPLICATION_JSON)
 					.body(BodyInserters.fromValue(result));
