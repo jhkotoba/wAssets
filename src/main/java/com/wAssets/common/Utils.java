@@ -1,7 +1,9 @@
 package com.wAssets.common;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -9,6 +11,9 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import io.r2dbc.spi.Row;
+import io.r2dbc.spi.RowMetadata;
 
 public class Utils {
 	
@@ -114,9 +119,9 @@ public class Utils {
 	 * @param string
 	 * @return string
 	 */
-	public static String converterCamelCaseString(String key) {
+	public static String converterCamelCaseString(String snakeCasekey) {
 		StringBuilder sBuilder = new StringBuilder();
-		String[] splitKey = key.split("_");
+		String[] splitKey = snakeCasekey.split("_");
 		if(splitKey.length < 2){			
 			if(Utils.isStringAllUpper(splitKey[0])) {
 				return splitKey[0].toLowerCase();
@@ -147,5 +152,53 @@ public class Utils {
 	        }
 	    }
 	    return true;
+	}
+	
+	/**
+	 * 인자로 받은 문자열을 카멜케이스에서 스네이크케이스로 변환한다.
+	 * @param string
+	 * @return string
+	 */
+	public static String converterSnakeCaseString(String camelCasekey) {
+        return camelCasekey.replaceAll("([a-z])([A-Z])", "$1_$2").toUpperCase();
+	}
+	
+	/**
+	 * 인자로 받은 모델과 row에서 데이터를 추출하여 모델에 세팅한다.
+	 * @param <T>
+	 * @param model
+	 * @param row
+	 * @param isCamelCase
+	 * @return
+	 */
+	public static <T> T converterCamelCaseModel(T model, Row row, RowMetadata rowMetadata, boolean isCamelCase) {		
+		try {			
+			//이름값 세팅
+			Iterator<String> ite = rowMetadata.getColumnNames().iterator();
+			Set<String> nameSet = new HashSet<String>();
+			while(ite.hasNext()) {
+				nameSet.add(ite.next());
+			}
+			
+			//모델 데이터 세팅
+			for (Field field : model.getClass().getDeclaredFields()) {
+				field.setAccessible(true);
+				
+				String name = null;
+				if(isCamelCase) {
+					name = Utils.converterSnakeCaseString(field.getName());
+				}else {
+					name = field.getName();
+				}
+				
+				if(nameSet.contains(name)) {
+					field.set(model, row.get(name));
+				}
+			}
+		} catch (IllegalArgumentException | IllegalAccessException e) {
+			e.printStackTrace();
+			throw new RuntimeException(Constant.CODE_UTIL_CONVERTER_ERROR, e);
+		}		
+		return model;
 	}
 }
