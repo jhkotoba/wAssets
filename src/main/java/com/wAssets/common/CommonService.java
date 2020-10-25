@@ -20,7 +20,6 @@ public class CommonService {
 	 * @return
 	 */
 	public Mono<SessionModel> getSession(ServerRequest request){
-		System.out.println("getSession");
 		return WebClient
 	        .create()
 	        .post()
