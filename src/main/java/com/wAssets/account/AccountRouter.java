@@ -19,6 +19,6 @@ public class AccountRouter {
 					.and(RequestPredicates.accept(MediaType.APPLICATION_JSON)), accountHandler::saveAccount)
 				//계좌목록조회
 				.andRoute(RequestPredicates.GET("/api/assets/getAccountList")
-						.and(RequestPredicates.accept(MediaType.APPLICATION_JSON)), accountHandler::getAccountList);
+					.and(RequestPredicates.accept(MediaType.APPLICATION_JSON)), accountHandler::getAccountList);
 		}
 }
