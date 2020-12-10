@@ -12,8 +12,8 @@ import org.springframework.web.reactive.function.server.ServerResponse;
 public class AccountRouter {
 
 		@Bean
-		public RouterFunction<ServerResponse> apiRouter(AccountHandler accountHandler){
-			return RouterFunctions			
+		public RouterFunction<ServerResponse> accountRoute(AccountHandler accountHandler){
+			return RouterFunctions
 				//계좌등록
 				.route(RequestPredicates.POST("/api/assets/saveAccount")
 					.and(RequestPredicates.accept(MediaType.APPLICATION_JSON)), accountHandler::saveAccount)
