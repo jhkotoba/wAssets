@@ -28,13 +28,11 @@ public interface Constant {
 	public static final String PASSWORD_FORMAT = "%0128x";
 	public static final String JWT_SUBJECT = "wmember";
 	
+	public static final String CODE_NO_LOGIN = "3000";
 	public static final String CODE_DIFF_PASSWORD = "3001";
 	public static final String CODE_NO_USER = "3002";
-	public static final String CODE_LOING_CHECK_ERROR = "3003";
+	public static final String CODE_LOING_CHECK_ERROR = "3003";	
 	
 	/* assets */
 	public static final String CODE_VALIDATION_ACCOUNT = "4001";
-	
-	
-
 }

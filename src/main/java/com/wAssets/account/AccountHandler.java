@@ -1,5 +1,6 @@
 package com.wAssets.account;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -88,6 +89,7 @@ public class AccountHandler {
 					.body(BodyInserters.fromValue(result));
 			//응답오류
 			}).onErrorResume(error -> {
+				result.setData(new ArrayList<AccountModel>());
 				result.setResultCode(error.getMessage());
 				return ServerResponse.ok()
 						.contentType(MediaType.APPLICATION_JSON)

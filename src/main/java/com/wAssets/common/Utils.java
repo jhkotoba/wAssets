@@ -1,6 +1,7 @@
 package com.wAssets.common;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -17,6 +18,12 @@ import io.r2dbc.spi.RowMetadata;
 
 public class Utils {
 	
+	/**
+	 * 날짜형식 체크
+	 * @param date
+	 * @param pattern
+	 * @return
+	 */
 	public static boolean isDate(String date, String pattern) {
 		
 		if(Objects.isNull(date)) {
@@ -54,6 +61,12 @@ public class Utils {
 		}
 	}
 	
+	/**
+	 * 날짜형식 체크 Not
+	 * @param date
+	 * @param pattern
+	 * @return
+	 */
 	public static boolean isNotDate(String date, String pattern) {
 		return !Utils.isDate(date, pattern);
 	}
@@ -164,6 +177,51 @@ public class Utils {
 	}
 	
 	/**
+	 * Map<String, Object>로 받은 값을 model형식으로 변환
+	 * @param <T>
+	 * @param data
+	 * @param clazz
+	 * @param isCamelCase
+	 * @return
+	 */
+	public static <T> T converterMapToModel(Map<String, Object> data, Class<T> clazz, boolean isCamelCase) {
+		T model = null;
+		try {
+			model = clazz.getDeclaredConstructor().newInstance();
+			
+			//이름값 세팅
+			Iterator<String> ite = data.keySet().iterator();
+			Set<String> nameSet = new HashSet<String>();
+			while(ite.hasNext()) {
+				nameSet.add(ite.next());
+			}
+			
+			//모델 데이터 세팅
+			for (Field field : model.getClass().getDeclaredFields()) {
+				field.setAccessible(true);
+				
+				String name = null;
+				if(isCamelCase) {
+					name = Utils.converterSnakeCaseString(field.getName());
+				}else {
+					name = field.getName();
+				}
+				
+				if(nameSet.contains(name)) {
+					field.set(model, data.get(name));
+				}
+			}
+		} catch (IllegalArgumentException | IllegalAccessException 
+				| InstantiationException | InvocationTargetException
+				| NoSuchMethodException | SecurityException e) {
+			e.printStackTrace();
+			throw new RuntimeException(Constant.CODE_UTIL_CONVERTER_ERROR, e);
+		}		
+		return model;
+	}
+	
+	/**
+	 * @deprecated
 	 * 인자로 받은 모델과 row에서 데이터를 추출하여 모델에 세팅한다.
 	 * @param <T>
 	 * @param model

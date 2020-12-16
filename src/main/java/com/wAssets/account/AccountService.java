@@ -2,7 +2,7 @@ package com.wAssets.account;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.util.StringUtils;
+import org.springframework.util.ObjectUtils;
 import org.springframework.web.reactive.function.server.ServerRequest;
 
 import com.wAssets.common.Constant;
@@ -27,13 +27,13 @@ public class AccountService {
 	public Mono<AccountModel> vaildAccount(AccountModel model){
 		try {
 			//빈값 체크			
-			if(StringUtils.isEmpty(model.getAcctTgtCd()) 		||
-					StringUtils.isEmpty(model.getAcctDivCd()) 	|| 
-					StringUtils.isEmpty(model.getAcctNum()) 	|| 
-					StringUtils.isEmpty(model.getCratDt()) 		|| 
-					StringUtils.isEmpty(model.getEpyDtUseYn()) 	|| 
-					StringUtils.isEmpty(model.getEpyDt()) 		|| 
-					StringUtils.isEmpty(model.getUseYn())
+			if(ObjectUtils.isEmpty(model.getAcctTgtCd()) 		||
+					ObjectUtils.isEmpty(model.getAcctDivCd()) 	|| 
+					ObjectUtils.isEmpty(model.getAcctNum()) 	|| 
+					ObjectUtils.isEmpty(model.getCratDt()) 		|| 
+					ObjectUtils.isEmpty(model.getEpyDtUseYn()) 	|| 
+					ObjectUtils.isEmpty(model.getEpyDt()) 		|| 
+					ObjectUtils.isEmpty(model.getUseYn())
 			) Mono.error(new RuntimeException(Constant.CODE_VALIDATION_ACCOUNT));
 			
 			//생성일 날짜형식 체크(YYYYMMDD)
@@ -78,7 +78,11 @@ public class AccountService {
 	 */
 	public Flux<AccountModel> selectAccountList(ServerRequest request, SessionModel session){
 		try {
-			return accountRepository.selectAccountList(request.queryParams(), session.getUserSeq());
+			if(session.isLogin()) {
+				return accountRepository.selectAccountList(request.queryParams(), session.getUserSeq());
+			}else {
+				return Flux.error(new RuntimeException(Constant.CODE_NO_LOGIN));
+			}
 		}catch (Exception e) {
 			return Flux.error(new RuntimeException(Constant.CODE_REPOSITORY_ERROR, e));
 		}

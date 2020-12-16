@@ -1,6 +1,6 @@
 package com.wAssets.account;
 
-import org.springframework.data.r2dbc.core.DatabaseClient;
+import org.springframework.r2dbc.core.DatabaseClient;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.MultiValueMap;
 
@@ -45,7 +45,7 @@ public class AccountRepository {
 		query.append("NOW() ");
 		query.append(")");
 		
-		return client.execute(query.toString())
+		return client.sql(query.toString())
 			.bind("userSeq", model.getUserSeq())
 			.bind("acctTgtCd", model.getAcctTgtCd())
 			.bind("acctDivCd", model.getAcctDivCd())
@@ -56,7 +56,8 @@ public class AccountRepository {
 			.bind("cratDt", model.getCratDt())
 			.bind("epyDtUseYn", model.getEpyDtUseYn())
 			.bind("epyDt", model.getEpyDt())
-			.bind("useYn", model.getUseYn()).fetch().rowsUpdated();
+			.bind("useYn", model.getUseYn())
+			.fetch().rowsUpdated();
 	}	
 
 	/**
@@ -78,12 +79,14 @@ public class AccountRepository {
 		sql.append(",EPY_DT_USE_YN ");
 		sql.append(",EPY_DT ");
 		sql.append(",USE_YN ");
-		sql.append(",DATE_FORMAT(REG_DTTM, '%Y-%m-%d %H:%i:%S') ");
-		sql.append(",DATE_FORMAT(MOD_DTTM, '%Y-%m-%d %H:%i:%S') ");
-		sql.append("FROM ACCOUNT WHERE 1=1 AND USER_SEQ = ").append(userSeq);
-		return client.execute(sql.toString()).as(AccountModel.class)
-			.map((row, rowMetadata) ->  Utils.converterCamelCaseModel(new AccountModel(), row,rowMetadata, true))		
+		sql.append(",DATE_FORMAT(REG_DTTM, '%Y-%m-%d %H:%i:%S') AS REG_DTTM ");
+		sql.append(",DATE_FORMAT(MOD_DTTM, '%Y-%m-%d %H:%i:%S') AS MOD_DTTM ");
+		sql.append("FROM ACCOUNT WHERE 1=1 AND USER_SEQ = ").append(userSeq);		
+		sql.append("FROM ACCOUNT WHERE 1=1");		
+		return client.sql(sql.toString())
+			.fetch()
 			.all()
+			.map(list -> Utils.converterMapToModel(list, AccountModel.class, true))
 			.onErrorResume(error -> Mono.error(new RuntimeException(error.getMessage(), error)));
 	}
 }
