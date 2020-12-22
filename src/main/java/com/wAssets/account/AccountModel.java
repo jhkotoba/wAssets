@@ -39,7 +39,7 @@ public class AccountModel {
 	private String useYn;
 	
 	//비고
-	private String rmk;
+	private String remark;
 	
 	//등록일시
 	private String regDttm;
@@ -143,12 +143,12 @@ public class AccountModel {
 		this.useYn = useYn;
 	}
 
-	public String getRmk() {
-		return rmk;
+	public String getRemark() {
+		return remark;
 	}
 
-	public void setRmk(String rmk) {
-		this.rmk = rmk;
+	public void setRmk(String remark) {
+		this.remark = remark;
 	}
 
 	public String getRegDttm() {
@@ -166,13 +166,13 @@ public class AccountModel {
 	public void setModDttm(String modDttm) {
 		this.modDttm = modDttm;
 	}
-
+	
 	@Override
 	public String toString() {
 		return "AccountModel [acctSeq=" + acctSeq + ", userSeq=" + userSeq + ", acctTgtCd=" + acctTgtCd + ", acctDivCd="
 				+ acctDivCd + ", acctNum=" + acctNum + ", acctNm=" + acctNm + ", fontClor=" + fontClor + ", bkgdClor="
 				+ bkgdClor + ", cratDt=" + cratDt + ", epyDtUseYn=" + epyDtUseYn + ", epyDt=" + epyDt + ", useYn="
-				+ useYn + ", rmk=" + rmk + ", regDttm=" + regDttm + ", modDttm=" + modDttm + "]";
+				+ useYn + ", remark=" + remark + ", regDttm=" + regDttm + ", modDttm=" + modDttm + "]";
 	}
 }
 	

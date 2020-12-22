@@ -27,7 +27,7 @@ public class AccountRepository {
 		
 		StringBuilder query = new StringBuilder("INSERT INTO ACCOUNT(");
 		query.append("USER_SEQ, ACCT_TGT_CD, ACCT_DIV_CD, ACCT_NUM, ACCT_NM, FONT_CLOR, ");
-		query.append("BKGD_CLOR, CRAT_DT, EPY_DT_USE_YN, EPY_DT, USE_YN, REG_DTTM, MOD_DTTM");
+		query.append("BKGD_CLOR, CRAT_DT, EPY_DT_USE_YN, EPY_DT, USE_YN, REMARK, REG_DTTM, MOD_DTTM");
 		query.append(") ");
 		query.append("VALUES(");		
 		query.append(":userSeq, ");
@@ -41,6 +41,7 @@ public class AccountRepository {
 		query.append(":epyDtUseYn, ");
 		query.append(":epyDt, ");
 		query.append(":useYn, ");
+		query.append(":remark, ");
 		query.append("NOW(), ");
 		query.append("NOW() ");
 		query.append(")");
@@ -57,6 +58,7 @@ public class AccountRepository {
 			.bind("epyDtUseYn", model.getEpyDtUseYn())
 			.bind("epyDt", model.getEpyDt())
 			.bind("useYn", model.getUseYn())
+			.bind("remark", model.getRemark())
 			.fetch().rowsUpdated();
 	}	
 
@@ -81,8 +83,8 @@ public class AccountRepository {
 		sql.append(",USE_YN ");
 		sql.append(",DATE_FORMAT(REG_DTTM, '%Y-%m-%d %H:%i:%S') AS REG_DTTM ");
 		sql.append(",DATE_FORMAT(MOD_DTTM, '%Y-%m-%d %H:%i:%S') AS MOD_DTTM ");
-		sql.append("FROM ACCOUNT WHERE 1=1 AND USER_SEQ = ").append(userSeq);		
-		sql.append("FROM ACCOUNT WHERE 1=1");		
+		sql.append("FROM ACCOUNT WHERE 1=1 AND USER_SEQ = ").append(userSeq);
+		
 		return client.sql(sql.toString())
 			.fetch()
 			.all()
