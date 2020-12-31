@@ -91,4 +91,34 @@ public class AccountRepository {
 			.map(list -> Utils.converterMapToModel(list, AccountModel.class, true))
 			.onErrorResume(error -> Mono.error(new RuntimeException(error.getMessage(), error)));
 	}
+	
+	/**
+	 * 계좌정보 조횐
+	 * @param params
+	 * @param userSeq
+	 * @return
+	 */
+	public Mono<AccountModel> selectAccount(MultiValueMap<String, String> params, Integer userSeq){
+		StringBuilder sql = new StringBuilder("SELECT ");
+		sql.append("ACCT_SEQ ");
+		sql.append(" ,ACCT_TGT_CD ");
+		sql.append(" ,ACCT_DIV_CD ");
+		sql.append(" ,ACCT_NUM ");
+		sql.append(" ,ACCT_NM ");
+		sql.append(" ,FONT_CLOR ");
+		sql.append(" ,BKGD_CLOR ");
+		sql.append(" ,CRAT_DT ");
+		sql.append(" ,EPY_DT_USE_YN ");
+		sql.append(" ,EPY_DT ");
+		sql.append(" ,USE_YN ");
+		sql.append(" ,DATE_FORMAT(REG_DTTM, '%Y-%m-%d %H:%i:%S') AS REG_DTTM ");
+		sql.append(" ,DATE_FORMAT(MOD_DTTM, '%Y-%m-%d %H:%i:%S') AS MOD_DTTM ");
+		sql.append(" FROM ACCOUNT WHERE 1=1 AND USER_SEQ = ").append(userSeq);
+		sql.append(" AND ACCT_SEQ = ").append(params.getFirst("acctSeq"));
+		return client.sql(sql.toString())
+			.fetch()
+			.one()			
+			.map(account -> Utils.converterMapToModel(account, AccountModel.class, true))
+			.onErrorResume(error -> Mono.error(new RuntimeException(error.getMessage(), error)));
+	}
 }

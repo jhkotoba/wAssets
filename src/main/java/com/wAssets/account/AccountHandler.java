@@ -96,4 +96,35 @@ public class AccountHandler {
 						.body(BodyInserters.fromValue(result));
 			});
 	}
+	
+	/**
+	 * 계좌정보 조회
+	 * @param request
+	 * @return
+	 */
+	public Mono<ServerResponse> getAccount(ServerRequest request){
+		//응답모델
+		ResponseModel<AccountModel> result = new ResponseModel<AccountModel>();
+		
+		//세션조회
+		return commonService.getSession(request)
+			//계좌목록 조회
+			.flatMap(sesson -> accountService.selectAccount(request, sesson))
+			//응답
+			.flatMap(fm -> {
+				//응답
+				result.setData(fm);
+				result.setResultCode(Constant.CODE_SUCCESS);
+				return ServerResponse.ok()
+					.contentType(MediaType.APPLICATION_JSON)
+					.body(BodyInserters.fromValue(result));
+			//응답오류
+			}).onErrorResume(error -> {
+				result.setData(new AccountModel());
+				result.setResultCode(error.getMessage());
+				return ServerResponse.ok()
+						.contentType(MediaType.APPLICATION_JSON)
+						.body(BodyInserters.fromValue(result));
+			});
+	}
 }

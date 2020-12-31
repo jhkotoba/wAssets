@@ -87,4 +87,22 @@ public class AccountService {
 			return Flux.error(new RuntimeException(Constant.CODE_REPOSITORY_ERROR, e));
 		}
 	}
+	
+	/**
+	 * 계좌정보 조회
+	 * @param request
+	 * @param session
+	 * @return
+	 */
+	public Mono<AccountModel> selectAccount(ServerRequest request, SessionModel session){
+		try {
+			if(session.isLogin()) {
+				return accountRepository.selectAccount(request.queryParams(), session.getUserSeq());
+			}else {
+				return Mono.error(new RuntimeException(Constant.CODE_NO_LOGIN));
+			}
+		}catch (Exception e) {
+			return Mono.error(new RuntimeException(Constant.CODE_REPOSITORY_ERROR, e));
+		}
+	}
 }
