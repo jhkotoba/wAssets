@@ -111,9 +111,9 @@ public class AccountHandler {
 			//계좌목록 조회
 			.flatMap(sesson -> accountService.selectAccount(request, sesson))
 			//응답
-			.flatMap(fm -> {
+			.flatMap(account -> {
 				//응답
-				result.setData(fm);
+				result.setData(account);
 				result.setResultCode(Constant.CODE_SUCCESS);
 				return ServerResponse.ok()
 					.contentType(MediaType.APPLICATION_JSON)

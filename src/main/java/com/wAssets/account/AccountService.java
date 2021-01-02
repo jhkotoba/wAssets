@@ -79,7 +79,8 @@ public class AccountService {
 	public Flux<AccountModel> selectAccountList(ServerRequest request, SessionModel session){
 		try {
 			if(session.isLogin()) {
-				return accountRepository.selectAccountList(request.queryParams(), session.getUserSeq());
+				return accountRepository.selectAccountList(request.queryParams(), session.getUserSeq())
+					.switchIfEmpty(Mono.error(new RuntimeException(Constant.CODE_DATA_EMPTY)));
 			}else {
 				return Flux.error(new RuntimeException(Constant.CODE_NO_LOGIN));
 			}
@@ -97,7 +98,8 @@ public class AccountService {
 	public Mono<AccountModel> selectAccount(ServerRequest request, SessionModel session){
 		try {
 			if(session.isLogin()) {
-				return accountRepository.selectAccount(request.queryParams(), session.getUserSeq());
+				return accountRepository.selectAccount(request.queryParams(), session.getUserSeq())
+					.switchIfEmpty(Mono.error(new RuntimeException(Constant.CODE_DATA_EMPTY)));
 			}else {
 				return Mono.error(new RuntimeException(Constant.CODE_NO_LOGIN));
 			}
