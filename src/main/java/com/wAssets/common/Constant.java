@@ -13,7 +13,11 @@ public interface Constant {
 	
 	/* common */
 	public static final String Y = "Y";
-	public static final String N = "N";	
+	public static final String N = "N";
+	public static final String GRID_STATE_SELECT = "SELECT";
+	public static final String GRID_STATE_INSERT = "INSERT";
+	public static final String GRID_STATE_UPDATE = "UPDATE";
+	public static final String GRID_STATE_REMOVE = "REMOVE";
 	
 	public static final String CODE_SUCCESS = "0000";
 	public static final String CODE_SERVER_ERROR = "9000";

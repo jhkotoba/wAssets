@@ -11,7 +11,6 @@ import com.wAssets.common.Utils;
 
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-import reactor.util.function.Tuple2;
 
 @Component
 public class AccountService {
@@ -48,8 +47,7 @@ public class AccountService {
 			}			
 			
 			//체크완료
-			return Mono.create(sink -> sink.success(model));
-			//return Mono.defer(() -> Mono.just(model));
+			return Mono.just(model);
 		}catch(Exception e) {
 			return Mono.error(new RuntimeException(Constant.CODE_UNKNOWN_ERROR));
 		}
@@ -59,11 +57,9 @@ public class AccountService {
 	 * 계좌저장
 	 * @param map
 	 * @return
-	 */
-	public Mono<Integer> insertAccount(Tuple2<AccountModel, SessionModel> tuple){
+	 */	
+	public Mono<Integer> insertAccount(AccountModel model){
 		try {
-			AccountModel model = tuple.getT1();
-			model.setUserSeq(tuple.getT2().getUserSeq());
 			return accountRepository.insertAccount(model);
 		}catch (Exception e) {			
 			return Mono.error(new RuntimeException(Constant.CODE_REPOSITORY_ERROR, e));

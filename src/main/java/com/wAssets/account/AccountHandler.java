@@ -1,7 +1,9 @@
 package com.wAssets.account;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -40,7 +42,16 @@ public class AccountHandler {
 			//세션조회
 			.zipWith(commonService.getSession(request))
 			//계좌 저장
-			.flatMap(accountService::insertAccount)
+			.flatMap(tuple -> {
+				//로그인 확인
+				if(tuple.getT2().isLogin()) {
+					AccountModel account = tuple.getT1();
+					account.setUserSeq(tuple.getT2().getUserSeq());
+					return accountService.insertAccount(account);
+				}else {
+					return Mono.error(new RuntimeException(Constant.CODE_NO_LOGIN));
+				}
+			})
 			//성공확인
 			.flatMap(count -> {				
 				if(count > 0) {
@@ -103,6 +114,7 @@ public class AccountHandler {
 	 * @return
 	 */
 	public Mono<ServerResponse> getAccount(ServerRequest request){
+		
 		//응답모델
 		ResponseModel<AccountModel> result = new ResponseModel<AccountModel>();
 		
@@ -123,6 +135,61 @@ public class AccountHandler {
 				result.setData(new AccountModel());
 				result.setResultCode(error.getMessage());
 				return ServerResponse.ok()
+						.contentType(MediaType.APPLICATION_JSON)
+						.body(BodyInserters.fromValue(result));
+			});
+	}
+	
+	public Mono<ServerResponse> applyAccount(ServerRequest request){
+		//응답모델
+		ResponseModel<Map<String, Integer>> result = new ResponseModel<Map<String, Integer>>();
+		
+		return request.bodyToFlux(AccountModel.class)
+			//계좌 밸류데이션체크
+			.flatMap(accountService::vaildAccount).collectList()
+			//세션체크
+			.zipWith(commonService.getSession(request))
+			//변경사항 저장
+			.flatMap(tuple -> {
+				
+				//변경사항 횟수
+				Map<String, Integer> data = new HashMap<String, Integer>();
+				
+				//사용자 번호
+				Integer userSeq = tuple.getT2().getUserSeq();
+				//로그인 확인
+				if(tuple.getT2().isLogin()) {
+					return Mono.error(new RuntimeException(Constant.CODE_NO_LOGIN));
+				}else {
+					//변경사항 저장
+					for(AccountModel account : tuple.getT1()) {
+						account.setUserSeq(userSeq);
+						
+						switch(account.get_state()) {
+						case Constant.GRID_STATE_INSERT :
+							accountService.insertAccount(account)
+								.subscribe(count -> data.put("insertCnt", data.get("insertCnt") + count));
+							break;
+						case Constant.GRID_STATE_UPDATE : 
+							break;
+						case Constant.GRID_STATE_REMOVE : 
+							break;
+						}
+					}
+				}
+				
+				return Mono.just(data);
+			}).flatMap(data -> {
+				//응답
+				result.setData(data);
+				result.setResultCode(Constant.CODE_SUCCESS);
+				return ServerResponse.ok()
+					.contentType(MediaType.APPLICATION_JSON)
+					.body(BodyInserters.fromValue(result));
+			})
+			.onErrorResume(error -> {
+				result.setResultCode(error.getMessage());
+				return ServerResponse.ok()						
 						.contentType(MediaType.APPLICATION_JSON)
 						.body(BodyInserters.fromValue(result));
 			});

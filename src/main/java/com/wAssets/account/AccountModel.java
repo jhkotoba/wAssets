@@ -1,6 +1,8 @@
 package com.wAssets.account;
 
-public class AccountModel {
+import com.wAssets.common.CommonModel;
+
+public class AccountModel extends CommonModel{
 	
 	//계좌 시퀀스
 	private Integer acctSeq;
@@ -46,7 +48,7 @@ public class AccountModel {
 	
 	//수정일시
 	private String modDttm;
-	
+
 	public Integer getAcctSeq() {
 		return acctSeq;
 	}
@@ -147,7 +149,7 @@ public class AccountModel {
 		return remark;
 	}
 
-	public void setRmk(String remark) {
+	public void setRemark(String remark) {
 		this.remark = remark;
 	}
 
@@ -166,7 +168,7 @@ public class AccountModel {
 	public void setModDttm(String modDttm) {
 		this.modDttm = modDttm;
 	}
-	
+
 	@Override
 	public String toString() {
 		return "AccountModel [acctSeq=" + acctSeq + ", userSeq=" + userSeq + ", acctTgtCd=" + acctTgtCd + ", acctDivCd="

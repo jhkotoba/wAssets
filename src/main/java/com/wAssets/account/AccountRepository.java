@@ -26,8 +26,10 @@ public class AccountRepository {
 	public Mono<Integer> insertAccount(AccountModel model){
 		
 		StringBuilder query = new StringBuilder("INSERT INTO ACCOUNT(");
-		query.append("USER_SEQ, ACCT_TGT_CD, ACCT_DIV_CD, ACCT_NUM, ACCT_NM, FONT_CLOR, ");
-		query.append("BKGD_CLOR, CRAT_DT, EPY_DT_USE_YN, EPY_DT, USE_YN, REMARK, REG_DTTM, MOD_DTTM");
+		//query.append("USER_SEQ, ACCT_TGT_CD, ACCT_DIV_CD, ACCT_NUM, ACCT_NM, FONT_CLOR, ");
+		//query.append("BKGD_CLOR, CRAT_DT, EPY_DT_USE_YN, EPY_DT, USE_YN, REMARK, REG_DTTM, MOD_DTTM");
+		query.append("USER_SEQ, ACCT_TGT_CD, ACCT_DIV_CD, ACCT_NUM, ACCT_NM,");
+		query.append("CRAT_DT, EPY_DT_USE_YN, EPY_DT, USE_YN, REG_DTTM, MOD_DTTM");
 		query.append(") ");
 		query.append("VALUES(");		
 		query.append(":userSeq, ");
@@ -35,13 +37,13 @@ public class AccountRepository {
 		query.append(":acctDivCd, ");
 		query.append(":acctNum, ");
 		query.append(":acctNm, ");
-		query.append(":fontClor, ");
-		query.append(":bkgdClor, ");
+		//query.append(":fontClor, ");
+		//query.append(":bkgdClor, ");
 		query.append(":cratDt, ");
 		query.append(":epyDtUseYn, ");
 		query.append(":epyDt, ");
 		query.append(":useYn, ");
-		query.append(":remark, ");
+		//query.append(":remark, ");
 		query.append("NOW(), ");
 		query.append("NOW() ");
 		query.append(")");
@@ -52,14 +54,17 @@ public class AccountRepository {
 			.bind("acctDivCd", model.getAcctDivCd())
 			.bind("acctNum", model.getAcctNum())
 			.bind("acctNm", model.getAcctNm())
-			.bind("fontClor", model.getFontClor())
-			.bind("bkgdClor", model.getBkgdClor())
+			//.bind("fontClor", model.getFontClor())
+			//.bind("bkgdClor", model.getBkgdClor())
 			.bind("cratDt", model.getCratDt())
 			.bind("epyDtUseYn", model.getEpyDtUseYn())
 			.bind("epyDt", model.getEpyDt())
 			.bind("useYn", model.getUseYn())
-			.bind("remark", model.getRemark())
-			.fetch().rowsUpdated();
+			//.bind("remark", model.getRemark())
+			.fetch().rowsUpdated()
+			.doOnNext(onNext -> {
+				System.out.println("insertAccount::" + onNext);
+			});
 	}	
 
 	/**

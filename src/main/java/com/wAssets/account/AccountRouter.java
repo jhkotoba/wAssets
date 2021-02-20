@@ -22,6 +22,9 @@ public class AccountRouter {
 					.and(RequestPredicates.accept(MediaType.APPLICATION_JSON)), accountHandler::getAccountList)
 				//계좌정보조회
 				.andRoute(RequestPredicates.GET("/api/assets/getAccount")
-					.and(RequestPredicates.accept(MediaType.APPLICATION_JSON)), accountHandler::getAccount);
+					.and(RequestPredicates.accept(MediaType.APPLICATION_JSON)), accountHandler::getAccount)		
+				//계좌정보변경 저장(등록, 수정, 삭제)
+				.andRoute(RequestPredicates.POST("/api/assets/applyAccount")
+					.and(RequestPredicates.accept(MediaType.APPLICATION_JSON)), accountHandler::applyAccount);
 		}
 }
