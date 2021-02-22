@@ -61,7 +61,7 @@ public class AccountService {
 	public Mono<Integer> insertAccount(AccountModel model){
 		try {
 			return accountRepository.insertAccount(model);
-		}catch (Exception e) {			
+		}catch (Exception e) {
 			return Mono.error(new RuntimeException(Constant.CODE_REPOSITORY_ERROR, e));
 		}
 	}
@@ -103,4 +103,21 @@ public class AccountService {
 			return Mono.error(new RuntimeException(Constant.CODE_REPOSITORY_ERROR, e));
 		}
 	}
+	
+	public Mono<Integer> applyAccount(AccountModel account, int userSeq){
+		//사용자 번호 세팅
+		account.setUserSeq(userSeq);
+		
+		return this.insertAccount(account);
+//		switch(account.get_state()) {
+//		case Constant.GRID_STATE_INSERT :
+//			return this.insertAccount(account);
+//		//case Constant.GRID_STATE_UPDATE : 
+//		//case Constant.GRID_STATE_REMOVE : 
+//			
+//		}
+	}
+	
+	
+			
 }

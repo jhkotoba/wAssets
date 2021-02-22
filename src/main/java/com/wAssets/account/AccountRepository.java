@@ -25,28 +25,40 @@ public class AccountRepository {
 	 */
 	public Mono<Integer> insertAccount(AccountModel model){
 		
-		StringBuilder query = new StringBuilder("INSERT INTO ACCOUNT(");
-		//query.append("USER_SEQ, ACCT_TGT_CD, ACCT_DIV_CD, ACCT_NUM, ACCT_NM, FONT_CLOR, ");
-		//query.append("BKGD_CLOR, CRAT_DT, EPY_DT_USE_YN, EPY_DT, USE_YN, REMARK, REG_DTTM, MOD_DTTM");
-		query.append("USER_SEQ, ACCT_TGT_CD, ACCT_DIV_CD, ACCT_NUM, ACCT_NM,");
-		query.append("CRAT_DT, EPY_DT_USE_YN, EPY_DT, USE_YN, REG_DTTM, MOD_DTTM");
-		query.append(") ");
-		query.append("VALUES(");		
-		query.append(":userSeq, ");
-		query.append(":acctTgtCd, ");
-		query.append(":acctDivCd, ");
-		query.append(":acctNum, ");
-		query.append(":acctNm, ");
-		//query.append(":fontClor, ");
-		//query.append(":bkgdClor, ");
-		query.append(":cratDt, ");
-		query.append(":epyDtUseYn, ");
-		query.append(":epyDt, ");
-		query.append(":useYn, ");
-		//query.append(":remark, ");
-		query.append("NOW(), ");
-		query.append("NOW() ");
-		query.append(")");
+		StringBuilder query = new StringBuilder();
+		query.append("/* insertAccount */		");
+		query.append("INSERT INTO ACCOUNT(		");
+		query.append("	USER_SEQ				");
+		query.append("	, ACCT_TGT_CD			");
+		query.append("	, ACCT_DIV_CD			");
+		query.append("	, ACCT_NUM				");
+		query.append("	, ACCT_NM				");
+		//query.append("	, FONT_CLOR				");
+		//query.append("	, BKGD_CLOR				");
+		query.append("	, CRAT_DT				");
+		query.append("	, EPY_DT_USE_YN			");
+		//query.append("	, EPY_DT				");
+		query.append("	, USE_YN				");
+		//query.append("	, REMARK				");
+		query.append("	, REG_DTTM				");
+		query.append("	, MOD_DTTM				");
+		query.append(")							");
+		query.append("VALUES(					");
+		query.append("	:userSeq				");
+		query.append("	, :acctTgtCd			");
+		query.append("	, :acctDivCd			");
+		query.append("	, :acctNum				");
+		query.append("	, :acctNm				");
+		//query.append("	, :fontClor				");
+		//query.append("	, :bkgdClor				");
+		query.append("	, :cratDt				");
+		query.append("	, :epyDtUseYn			");
+		//query.append("	, :epyDt				");
+		query.append("	, 'Y'					");
+		//query.append("	, :remark				");
+		query.append("	, NOW()					");
+		query.append("	, NOW()					");
+		query.append(")							");
 		
 		return client.sql(query.toString())
 			.bind("userSeq", model.getUserSeq())
@@ -58,13 +70,10 @@ public class AccountRepository {
 			//.bind("bkgdClor", model.getBkgdClor())
 			.bind("cratDt", model.getCratDt())
 			.bind("epyDtUseYn", model.getEpyDtUseYn())
-			.bind("epyDt", model.getEpyDt())
-			.bind("useYn", model.getUseYn())
+			//.bind("epyDt", model.getEpyDt())
+			//.bind("useYn", model.getUseYn())
 			//.bind("remark", model.getRemark())
-			.fetch().rowsUpdated()
-			.doOnNext(onNext -> {
-				System.out.println("insertAccount::" + onNext);
-			});
+			.fetch().rowsUpdated();
 	}	
 
 	/**
