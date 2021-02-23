@@ -1,5 +1,10 @@
 package com.wAssets.common;
 
+/**
+ * 공통적인 변수를 위한 모델
+ * @author JeHoon
+ *
+ */
 public class CommonModel {
 	
 	//상태

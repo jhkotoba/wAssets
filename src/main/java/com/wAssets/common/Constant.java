@@ -22,8 +22,11 @@ public interface Constant {
 	public static final String CODE_SUCCESS = "0000";
 	public static final String CODE_SERVER_ERROR = "9000";
 	public static final String CODE_REPOSITORY_ERROR = "9001";
-	public static final String CODE_INSERT_EMPTY_ERROR = "9001";
-	public static final String CODE_UTIL_CONVERTER_ERROR = "9002";
+	public static final String CODE_APPALY_EMPTY_ERROR = "9002";
+	public static final String CODE_INSERT_EMPTY_ERROR = "9003";
+	public static final String CODE_UPDATE_EMPTY_ERROR = "9004";
+	public static final String CODE_DELETE_EMPTY_ERROR = "9005";
+	public static final String CODE_UTIL_CONVERTER_ERROR = "9006";
 	public static final String CODE_DATA_EMPTY = "9400";
 	public static final String CODE_UNKNOWN_ERROR = "9999";
 	

@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.reactive.function.server.ServerRequest;
 
+import com.wAssets.common.ApplyModel;
 import com.wAssets.common.Constant;
 import com.wAssets.common.SessionModel;
 import com.wAssets.common.Utils;
@@ -104,20 +105,28 @@ public class AccountService {
 		}
 	}
 	
-	public Mono<Integer> applyAccount(AccountModel account, int userSeq){
+	/**
+	 * 계좌적용 (저장, 수정, 삭제)
+	 * @param account
+	 * @param userSeq
+	 * @return
+	 */
+	public Mono<ApplyModel> applyAccount(AccountModel account, int userSeq){
+		
 		//사용자 번호 세팅
 		account.setUserSeq(userSeq);
+		//다사용 객체
+		Mono<ApplyModel> result = null; 
 		
-		return this.insertAccount(account);
-//		switch(account.get_state()) {
-//		case Constant.GRID_STATE_INSERT :
-//			return this.insertAccount(account);
-//		//case Constant.GRID_STATE_UPDATE : 
-//		//case Constant.GRID_STATE_REMOVE : 
-//			
-//		}
-	}
-	
-	
-			
+		//저장, 수정, 삭제 분기
+		switch(account.get_state()) {
+		case Constant.GRID_STATE_INSERT :
+			result = this.insertAccount(account).flatMap(count -> Mono.just(new ApplyModel(1, count)));
+		//case Constant.GRID_STATE_UPDATE : 
+		//	return this.updateAccount(account);
+		//case Constant.GRID_STATE_REMOVE : 
+		//	return this.deleteAccount(account);
+		}
+		return result;
+	}		
 }

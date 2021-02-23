@@ -1,9 +1,7 @@
 package com.wAssets.account;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -12,12 +10,11 @@ import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 
+import com.wAssets.common.ApplyModel;
 import com.wAssets.common.CommonService;
 import com.wAssets.common.Constant;
 import com.wAssets.common.ResponseModel;
-import com.wAssets.common.SessionModel;
 
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @Component
@@ -149,29 +146,33 @@ public class AccountHandler {
 	 */
 	public Mono<ServerResponse> applyAccount(ServerRequest request){
 		//응답모델
-		ResponseModel<Map<String, Integer>> result = new ResponseModel<Map<String, Integer>>();
+		ResponseModel<ApplyModel> result = new ResponseModel<ApplyModel>();
 		
 		return commonService.getSession(request)
 			.flatMap(session -> {
 				//세션 체크
 				if(session.isLogin()) {
+					
+					ApplyModel apply = new ApplyModel();
+					
 					//계좌정보 목록
 					return request.bodyToFlux(AccountModel.class)
 						//계좌 밸류데이션체크
 						.flatMap(accountService::vaildAccount)
 						//계좌 반영
 						.flatMap(account -> accountService.applyAccount(account, session.getUserSeq()))
-						.flatMap(applyCnt -> {
-							if(applyCnt > 0) {
+						.flatMap(count -> {
+							if(count.isCount()) {
+								apply.append(count);
 								return Mono.empty();
 							}else {
-								return Mono.error(new RuntimeException(Constant.CODE_NO_LOGIN));
+								return Mono.error(new RuntimeException(Constant.CODE_APPALY_EMPTY_ERROR));
 							}
 						})
 						.collectList()
 						.flatMap(map -> {
 							//응답
-							result.setData(null);
+							result.setData(apply);
 							result.setResultCode(Constant.CODE_SUCCESS);
 							return ServerResponse.ok()
 								.contentType(MediaType.APPLICATION_JSON)
@@ -181,65 +182,5 @@ public class AccountHandler {
 					return Mono.error(new RuntimeException(Constant.CODE_NO_LOGIN));
 				}
 			});
-}
-	
-//	public Mono<ServerResponse> applyAccount(ServerRequest request){
-//		//응답모델
-//		ResponseModel<Map<String, Integer>> result = new ResponseModel<Map<String, Integer>>();
-//		
-//		return request.bodyToFlux(AccountModel.class)
-//			//계좌 밸류데이션체크
-//			.flatMap(accountService::vaildAccount).collectList()
-//			//세션체크
-//			.zipWith(commonService.getSession(request))
-//			//변경사항 저장
-//			.flatMap(tuple -> {
-//				
-//				//변경사항 횟수
-//				Map<String, Integer> data = new HashMap<String, Integer>();
-//				
-//				//사용자 번호
-//				Integer userSeq = tuple.getT2().getUserSeq();
-//				//로그인 확인
-//				if(tuple.getT2().isLogin()) {
-//					
-//					try {
-//						//변경사항 저장
-//						for(AccountModel account : tuple.getT1()) {
-//							account.setUserSeq(userSeq);
-//							
-//							switch(account.get_state()) {
-//							case Constant.GRID_STATE_INSERT :
-//								accountService.insertAccount(account)
-//									.subscribe(count -> data.put("insertCnt", data.get("insertCnt") + count));
-//								break;
-//							case Constant.GRID_STATE_UPDATE : 
-//								break;
-//							case Constant.GRID_STATE_REMOVE : 
-//								break;
-//							}
-//						}
-//						
-//					}catch (Exception e) {
-//						return Mono.error(e);
-//					}
-//				}else {
-//					return Mono.error(new RuntimeException(Constant.CODE_NO_LOGIN));
-//				}
-//				return Mono.just(data);
-//			}).flatMap(data -> {
-//				//응답
-//				result.setData(data);
-//				result.setResultCode(Constant.CODE_SUCCESS);
-//				return ServerResponse.ok()
-//					.contentType(MediaType.APPLICATION_JSON)
-//					.body(BodyInserters.fromValue(result));
-//			})
-//			.onErrorResume(error -> {
-//				result.setResultCode(error.getMessage());
-//				return ServerResponse.ok()						
-//						.contentType(MediaType.APPLICATION_JSON)
-//						.body(BodyInserters.fromValue(result));
-//			});
-//	}
+	}
 }
