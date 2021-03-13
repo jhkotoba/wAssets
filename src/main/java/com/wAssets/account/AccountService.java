@@ -31,19 +31,20 @@ public class AccountService {
 					ObjectUtils.isEmpty(model.getAcctDivCd()) 	|| 
 					ObjectUtils.isEmpty(model.getAcctNum()) 	|| 
 					ObjectUtils.isEmpty(model.getCratDt()) 		|| 
-					ObjectUtils.isEmpty(model.getEpyDtUseYn()) 	|| 
-					ObjectUtils.isEmpty(model.getEpyDt()) 		|| 
+					ObjectUtils.isEmpty(model.getEpyDtUseYn()) 	||					
 					ObjectUtils.isEmpty(model.getUseYn())
-			) Mono.error(new RuntimeException(Constant.CODE_VALIDATION_ACCOUNT));
+			) {	
+				return Mono.error(new RuntimeException(Constant.CODE_VALIDATION_ACCOUNT));
+			}
 			
 			//생성일 날짜형식 체크(YYYYMMDD)
 			if(Utils.isNotDate(model.getCratDt(), Constant.YYYYMMDD)) {
-				Mono.error(new RuntimeException(Constant.CODE_VALIDATION_ACCOUNT));
+				return Mono.error(new RuntimeException(Constant.CODE_VALIDATION_ACCOUNT));
 				
 			//만기일 날짜형식 체크(YYYYMMDD)
 			}else if(Constant.Y.equals(model.getEpyDtUseYn())) {
 				if(Utils.isNotDate(model.getEpyDt(), Constant.YYYYMMDD)) {
-					Mono.error(new RuntimeException(Constant.CODE_VALIDATION_ACCOUNT));
+					return Mono.error(new RuntimeException(Constant.CODE_VALIDATION_ACCOUNT));
 				}
 			}			
 			
@@ -62,6 +63,32 @@ public class AccountService {
 	public Mono<Integer> insertAccount(AccountModel model){
 		try {
 			return accountRepository.insertAccount(model);
+		}catch (Exception e) {
+			return Mono.error(new RuntimeException(Constant.CODE_REPOSITORY_ERROR, e));
+		}
+	}
+	
+	/**
+	 * 계좌수정
+	 * @param model
+	 * @return
+	 */
+	public Mono<Integer> updateAccount(AccountModel model){
+		try {
+			return accountRepository.updateAccount(model);
+		}catch (Exception e) {
+			return Mono.error(new RuntimeException(Constant.CODE_REPOSITORY_ERROR, e));
+		}
+	}
+	
+	/**
+	 * 계좌삭제
+	 * @param model
+	 * @return
+	 */
+	public Mono<Integer> deleteAccount(AccountModel model){
+		try {
+			return accountRepository.deleteAccount(model);
 		}catch (Exception e) {
 			return Mono.error(new RuntimeException(Constant.CODE_REPOSITORY_ERROR, e));
 		}
@@ -122,10 +149,12 @@ public class AccountService {
 		switch(account.get_state()) {
 		case Constant.GRID_STATE_INSERT :
 			result = this.insertAccount(account).flatMap(count -> Mono.just(new ApplyModel(1, count)));
-		//case Constant.GRID_STATE_UPDATE : 
-		//	return this.updateAccount(account);
-		//case Constant.GRID_STATE_REMOVE : 
-		//	return this.deleteAccount(account);
+			
+		case Constant.GRID_STATE_UPDATE :
+			//result = Mono.error(new Exception("TEST"));
+			//result = this.updateAccount(account).flatMap(count -> Mono.just(new ApplyModel(0, count)));
+		case Constant.GRID_STATE_REMOVE : 
+			//result = this.deleteAccount(account).flatMap(count -> Mono.just(new ApplyModel(-1, count)));
 		}
 		return result;
 	}		

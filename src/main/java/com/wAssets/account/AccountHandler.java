@@ -146,7 +146,7 @@ public class AccountHandler {
 	 */
 	public Mono<ServerResponse> applyAccount(ServerRequest request){
 		//응답모델
-		ResponseModel<ApplyModel> result = new ResponseModel<ApplyModel>();
+		ResponseModel<Object> result = new ResponseModel<Object>();
 		
 		return commonService.getSession(request)
 			.flatMap(session -> {
@@ -177,6 +177,13 @@ public class AccountHandler {
 							return ServerResponse.ok()
 								.contentType(MediaType.APPLICATION_JSON)
 								.body(BodyInserters.fromValue(result));
+						//응답오류
+						}).onErrorResume(error -> {
+							result.setData(error.getMessage());
+							result.setResultCode(error.getMessage());
+							return ServerResponse.ok()
+									.contentType(MediaType.APPLICATION_JSON)
+									.body(BodyInserters.fromValue(result));
 						});
 				}else {
 					return Mono.error(new RuntimeException(Constant.CODE_NO_LOGIN));
