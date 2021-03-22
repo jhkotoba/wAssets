@@ -7,6 +7,8 @@ public class AccountModel extends CommonModel{
 	//계좌 시퀀스
 	private Integer acctSeq;
 	
+	private Integer acctOdr;
+	
 	//유저 시퀀스
 	private Integer userSeq;	
 	
@@ -55,6 +57,14 @@ public class AccountModel extends CommonModel{
 
 	public void setAcctSeq(Integer acctSeq) {
 		this.acctSeq = acctSeq;
+	}
+	
+	public Integer getAcctOdr() {
+		return acctOdr;
+	}
+
+	public void setAcctOdr(Integer acctOdr) {
+		this.acctOdr = acctOdr;
 	}
 
 	public Integer getUserSeq() {
