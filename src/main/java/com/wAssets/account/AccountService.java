@@ -46,7 +46,12 @@ public class AccountService {
 				if(Utils.isNotDate(model.getEpyDt(), Constant.YYYYMMDD)) {
 					return Mono.error(new RuntimeException(Constant.CODE_VALIDATION_ACCOUNT));
 				}
-			}			
+			}
+			
+			//정렬순서 값이 비어있을경우 0으로 세팅
+			if(ObjectUtils.isEmpty(model.getAcctOdr())) {
+				model.setAcctOdr(0);
+			}
 			
 			//체크완료
 			return Mono.just(model);

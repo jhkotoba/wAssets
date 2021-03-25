@@ -30,6 +30,7 @@ public class AccountRepository {
 		StringBuilder query = new StringBuilder();                  
 		query.append("INSERT INTO ACCOUNT(");
 		query.append("USER_SEQ /* 사용자시퀀스 */");
+		query.append(", ACCT_ODR /* 계좌순번 */");
 		query.append(", ACCT_TGT_CD /* 계좌유형코드 */");
 		query.append(", ACCT_DIV_CD /* 계좌구분코드 */");
 		query.append(", ACCT_NUM /* 계좌번호 */");
@@ -53,6 +54,7 @@ public class AccountRepository {
 		query.append(", MOD_DTTM /* 수정일시 */");
 		query.append(")VALUES(");
 		query.append(model.getUserSeq());									//사용자시퀀스
+		query.append(", " +  model.getAcctOdr());							//계좌순번
 		query.append(", '" +  model.getAcctTgtCd() + "'");					//계좌유형코드
 		query.append(", '" +  model.getAcctDivCd() + "'");					//계좌구분코드
 		query.append(", '" +  model.getAcctNum() + "'");					//계좌번호

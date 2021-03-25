@@ -7,6 +7,7 @@ public class AccountModel extends CommonModel{
 	//계좌 시퀀스
 	private Integer acctSeq;
 	
+	//계좌 정렬순서
 	private Integer acctOdr;
 	
 	//유저 시퀀스
