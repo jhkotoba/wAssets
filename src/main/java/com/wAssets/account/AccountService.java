@@ -25,36 +25,55 @@ public class AccountService {
 	 * @return
 	 */
 	public Mono<AccountModel> vaildAccount(AccountModel model){
+		
 		try {
-			//빈값 체크			
-			if(ObjectUtils.isEmpty(model.getAcctTgtCd()) 		||
-					ObjectUtils.isEmpty(model.getAcctDivCd()) 	|| 
-					ObjectUtils.isEmpty(model.getAcctNum()) 	|| 
-					ObjectUtils.isEmpty(model.getCratDt()) 		|| 
-					ObjectUtils.isEmpty(model.getEpyDtUseYn()) 	||					
-					ObjectUtils.isEmpty(model.getUseYn())
-			) {	
-				return Mono.error(new RuntimeException(Constant.CODE_VALIDATION_ACCOUNT));
-			}
-			
-			//생성일 날짜형식 체크(YYYYMMDD)
-			if(Utils.isNotDate(model.getCratDt(), Constant.YYYYMMDD)) {
-				return Mono.error(new RuntimeException(Constant.CODE_VALIDATION_ACCOUNT));
+			//행 상태(insert, update)
+			if(Constant.GRID_STATE_INSERT.equals(model.get_state()) || Constant.GRID_STATE_UPDATE.equals(model.get_state())) {
 				
-			//만기일 날짜형식 체크(YYYYMMDD)
-			}else if(Constant.Y.equals(model.getEpyDtUseYn())) {
-				if(Utils.isNotDate(model.getEpyDt(), Constant.YYYYMMDD)) {
+				//빈값 체크			
+				if(ObjectUtils.isEmpty(model.getAcctTgtCd()) 		||
+						ObjectUtils.isEmpty(model.getAcctDivCd()) 	|| 
+						ObjectUtils.isEmpty(model.getAcctNum()) 	|| 
+						ObjectUtils.isEmpty(model.getCratDt()) 		|| 
+						ObjectUtils.isEmpty(model.getEpyDtUseYn()) 	||					
+						ObjectUtils.isEmpty(model.getUseYn())
+				) {	
 					return Mono.error(new RuntimeException(Constant.CODE_VALIDATION_ACCOUNT));
 				}
+				
+				//생성일 날짜형식 체크(YYYYMMDD)
+				if(Utils.isNotDate(model.getCratDt(), Constant.YYYYMMDD)) {
+					return Mono.error(new RuntimeException(Constant.CODE_VALIDATION_ACCOUNT));
+					
+				//만기일 날짜형식 체크(YYYYMMDD)
+				}else if(Constant.Y.equals(model.getEpyDtUseYn())) {
+					if(Utils.isNotDate(model.getEpyDt(), Constant.YYYYMMDD)) {
+						return Mono.error(new RuntimeException(Constant.CODE_VALIDATION_ACCOUNT));
+					}
+				}
+				
+				//정렬순서 값이 비어있을경우 0으로 세팅
+				if(ObjectUtils.isEmpty(model.getAcctOdr())) {
+					model.setAcctOdr(0);
+				}
+				//체크완료
+				return Mono.just(model);
+				
+			//행 상태(delete)
+			}else if(Constant.GRID_STATE_REMOVE.equals(model.get_state())) {
+				
+				//가계부에 사용되는 계좌인지 체크
+				//if() {
+				//	new RuntimeException(Constant.)
+				//}
+				
+				//체크완료
+				return Mono.just(model);
+				
+			//그 외의 행 상태
+			}else {
+				return Mono.error(new RuntimeException(Constant.CODE_UNKNOWN_ERROR));
 			}
-			
-			//정렬순서 값이 비어있을경우 0으로 세팅
-			if(ObjectUtils.isEmpty(model.getAcctOdr())) {
-				model.setAcctOdr(0);
-			}
-			
-			//체크완료
-			return Mono.just(model);
 		}catch(Exception e) {
 			return Mono.error(new RuntimeException(Constant.CODE_UNKNOWN_ERROR));
 		}
@@ -154,12 +173,13 @@ public class AccountService {
 		switch(account.get_state()) {
 		case Constant.GRID_STATE_INSERT :
 			result = this.insertAccount(account).flatMap(count -> Mono.just(new ApplyModel(1, count)));
-			
+			break;
 		case Constant.GRID_STATE_UPDATE :
 			//result = Mono.error(new Exception("TEST"));
 			//result = this.updateAccount(account).flatMap(count -> Mono.just(new ApplyModel(0, count)));
 		case Constant.GRID_STATE_REMOVE : 
-			//result = this.deleteAccount(account).flatMap(count -> Mono.just(new ApplyModel(-1, count)));
+			result = this.deleteAccount(account).flatMap(count -> Mono.just(new ApplyModel(-1, count)));
+			break;
 		}
 		return result;
 	}		
