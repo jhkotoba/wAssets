@@ -87,59 +87,31 @@ public class AccountRepository {
 	 * @return
 	 */
 	public Mono<Integer> updateAccount(AccountModel model){
-//		StringBuilder query = new StringBuilder();
-//		query.append("/* insertAccount */		");
-//		//query.append("INSERT INTO ACCOUNT(		");
-//		//query.append("	USER_SEQ				");
-//		query.append("	, ACCT_TGT_CD			");
-//		query.append("	, ACCT_DIV_CD			");
-//		query.append("	, ACCT_NUM				");
-//		query.append("	, ACCT_NM				");
-//		//query.append("	, FONT_CLOR				");
-//		//query.append("	, BKGD_CLOR				");
-//		query.append("	, CRAT_DT				");
-//		query.append("	, EPY_DT_USE_YN			");
-//		//query.append("	, EPY_DT				");
-//		query.append("	, USE_YN				");
-//		//query.append("	, REMARK				");
-//		query.append("	, REG_DTTM				");
-//		query.append("	, MOD_DTTM				");
-//		query.append(")							");
-//		query.append("VALUES(					");
-//		query.append("	:userSeq				");
-//		query.append("	, :acctTgtCd			");
-//		query.append("	, :acctDivCd			");
-//		query.append("	, :acctNum				");
-//		query.append("	, :acctNm				");
-//		//query.append("	, :fontClor				");
-//		//query.append("	, :bkgdClor				");
-//		query.append("	, :cratDt				");
-//		query.append("	, :epyDtUseYn			");
-//		//query.append("	, :epyDt				");
-//		query.append("	, 'Y'					");
-//		//query.append("	, :remark				");
-//		query.append("	, NOW()					");
-//		query.append("	, NOW()					");
-//		query.append(")							");
-//		
-//		return client.sql(query.toString())
-//			.bind("userSeq", model.getUserSeq())
-//			.bind("acctTgtCd", model.getAcctTgtCd())
-//			.bind("acctDivCd", model.getAcctDivCd())
-//			.bind("acctNum", model.getAcctNum())
-//			.bind("acctNm", model.getAcctNm())
-//			//.bind("fontClor", model.getFontClor())
-//			//.bind("bkgdClor", model.getBkgdClor())
-//			.bind("cratDt", model.getCratDt())
-//			.bind("epyDtUseYn", model.getEpyDtUseYn())
-//			//.bind("epyDt", model.getEpyDt())
-//			//.bind("useYn", model.getUseYn())
-//			//.bind("remark", model.getRemark())
-//			.fetch().rowsUpdated();
 		
-		StringBuilder query = new StringBuilder();
-		query.append("SELECT 1 FROM ACCOUNT WHERE 1=0");
-		return client.sql(query.toString()).fetch().rowsUpdated().switchIfEmpty(Mono.error(new Exception("TEST")));
+		StringBuilder query = new StringBuilder("/* AccountRepository.updateAccount */");
+		query.append(" UPDATE ACCOUNT /* [계좌] */");
+		query.append(" SET ACCT_ODR = ").append(model.getAcctOdr());
+		query.append(" , ACCT_TGT_CD = ").append("'").append(model.getAcctTgtCd()).append("'");
+		query.append(" , ACCT_DIV_CD = ").append("'").append(model.getAcctDivCd()).append("'");
+		query.append(" , ACCT_NUM = ").append("'").append(model.getAcctNum()).append("'");
+		query.append(" , ACCT_NM = ").append("'").append(model.getAcctNm()).append("'");
+		if(ObjectUtils.isEmpty(model.getFontClor()) == false){
+			query.append(" , FONT_CLOR = ").append("'").append(model.getFontClor()).append("'");
+		}
+		if(ObjectUtils.isEmpty(model.getBkgdClor()) == false){
+			query.append(" , BKGD_CLOR = ").append("'").append(model.getBkgdClor()).append("'");
+		}
+		query.append(" , CRAT_DT = ").append("'").append(model.getCratDt()).append("'");
+		query.append(" , EPY_DT_USE_YN = ").append("'").append(model.getEpyDtUseYn()).append("'");
+		query.append(" , EPY_DT = ").append("'").append(model.getEpyDt()).append("'");
+		query.append(" , USE_YN = ").append("'").append(model.getUseYn()).append("'");
+		query.append(" , EPY_DT_USE_YN = ").append("'").append(model.getEpyDtUseYn()).append("'");
+		query.append(" , REMARK = ").append("'").append(model.getRemark()).append("'");
+		query.append(" , MOD_DTTM = NOW()");
+		query.append(" WHERE ACCT_SEQ = ").append(model.getAcctSeq());
+		query.append(" AND USER_SEQ = ").append(model.getUserSeq());
+		
+		return client.sql(query.toString()).fetch().rowsUpdated();
 	}
 	
 	/**

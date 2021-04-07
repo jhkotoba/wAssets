@@ -166,7 +166,6 @@ public class AccountService {
 		
 		//사용자 번호 세팅
 		account.setUserSeq(userSeq);
-		//다사용 객체
 		Mono<ApplyModel> result = null; 
 		
 		//저장, 수정, 삭제 분기
@@ -175,8 +174,8 @@ public class AccountService {
 			result = this.insertAccount(account).flatMap(count -> Mono.just(new ApplyModel(1, count)));
 			break;
 		case Constant.GRID_STATE_UPDATE :
-			//result = Mono.error(new Exception("TEST"));
-			//result = this.updateAccount(account).flatMap(count -> Mono.just(new ApplyModel(0, count)));
+			result = this.updateAccount(account).flatMap(count -> Mono.just(new ApplyModel(0, count)));
+			break;
 		case Constant.GRID_STATE_REMOVE : 
 			result = this.deleteAccount(account).flatMap(count -> Mono.just(new ApplyModel(-1, count)));
 			break;
