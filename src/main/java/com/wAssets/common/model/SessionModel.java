@@ -1,4 +1,4 @@
-package com.wAssets.common;
+package com.wAssets.common.model;
 
 public class SessionModel {
 

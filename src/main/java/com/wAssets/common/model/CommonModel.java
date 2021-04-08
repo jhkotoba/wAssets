@@ -1,4 +1,4 @@
-package com.wAssets.common;
+package com.wAssets.common.model;
 
 /**
  * 공통적인 변수를 위한 모델

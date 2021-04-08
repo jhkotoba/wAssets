@@ -1,4 +1,4 @@
-package com.wAssets.common;
+package com.wAssets.common.model;
 
 /**
  * 저장, 수정, 삭제 갯수를 저장하는 모델

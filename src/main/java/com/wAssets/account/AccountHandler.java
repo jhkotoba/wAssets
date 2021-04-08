@@ -10,10 +10,11 @@ import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 
-import com.wAssets.common.ApplyModel;
+import com.wAssets.account.model.AccountModel;
 import com.wAssets.common.CommonService;
 import com.wAssets.common.Constant;
-import com.wAssets.common.ResponseModel;
+import com.wAssets.common.model.ApplyModel;
+import com.wAssets.common.model.ResponseModel;
 
 import reactor.core.publisher.Mono;
 

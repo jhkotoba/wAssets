@@ -5,10 +5,11 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.reactive.function.server.ServerRequest;
 
-import com.wAssets.common.ApplyModel;
+import com.wAssets.account.model.AccountModel;
 import com.wAssets.common.Constant;
-import com.wAssets.common.SessionModel;
 import com.wAssets.common.Utils;
+import com.wAssets.common.model.ApplyModel;
+import com.wAssets.common.model.SessionModel;
 
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
