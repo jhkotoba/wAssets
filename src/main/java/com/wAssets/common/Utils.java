@@ -215,7 +215,7 @@ public class Utils {
 				| InstantiationException | InvocationTargetException
 				| NoSuchMethodException | SecurityException e) {
 			e.printStackTrace();
-			throw new RuntimeException(Constant.CODE_UTIL_CONVERTER_ERROR, e);
+			throw new RuntimeException(e);
 		}		
 		return model;
 	}
@@ -255,7 +255,7 @@ public class Utils {
 			}
 		} catch (IllegalArgumentException | IllegalAccessException e) {
 			e.printStackTrace();
-			throw new RuntimeException(Constant.CODE_UTIL_CONVERTER_ERROR, e);
+			throw new RuntimeException(e);
 		}		
 		return model;
 	}

@@ -62,7 +62,7 @@ public class AccountHandler {
 						.body(BodyInserters.fromValue(result));
 				}else {
 					//insert 실패
-					result.setResultCode(Constant.CODE_INSERT_EMPTY_ERROR);
+					result.setResultCode(Constant.CODE_INSERT_EMPTY);
 					return ServerResponse.ok()
 						.contentType(MediaType.APPLICATION_JSON)
 						.body(BodyInserters.fromValue(result));
@@ -139,56 +139,42 @@ public class AccountHandler {
 						.body(BodyInserters.fromValue(result));
 			});
 	}
-
+	
 	/**
 	 * 계좌변경사항 반영(저장, 수정, 삭제)
 	 * @param request
 	 * @return
 	 */
 	public Mono<ServerResponse> applyAccount(ServerRequest request){
-		//응답모델
-		ResponseModel<Object> result = new ResponseModel<Object>();
 		
-		return commonService.getSession(request)
-			.flatMap(session -> {
-				//세션 체크
-				if(session.isLogin()) {
-					
-					ApplyModel apply = new ApplyModel();
-					
-					//계좌정보 목록
-					return request.bodyToFlux(AccountModel.class)
-						//계좌 밸류데이션체크
-						.flatMap(accountService::vaildAccount)
-						//계좌 반영
-						.flatMap(account -> accountService.applyAccount(account, session.getUserSeq()))
-						.flatMap(count -> {
-							if(count.isCount()) {
-								apply.append(count);
-								return Mono.empty();
-							}else {
-								return Mono.error(new RuntimeException(Constant.CODE_APPALY_EMPTY_ERROR));
-							}
-						})
-						.collectList()
-						.flatMap(map -> {
-							//응답
-							result.setData(apply);
-							result.setResultCode(Constant.CODE_SUCCESS);
-							return ServerResponse.ok()
-								.contentType(MediaType.APPLICATION_JSON)
-								.body(BodyInserters.fromValue(result));
-						//응답오류
-						}).onErrorResume(error -> {
-							result.setData(error.getMessage());
-							result.setResultCode(error.getMessage());
-							return ServerResponse.ok()
-									.contentType(MediaType.APPLICATION_JSON)
-									.body(BodyInserters.fromValue(result));
-						});
-				}else {
-					return Mono.error(new RuntimeException(Constant.CODE_NO_LOGIN));
-				}
-			});
+		//응답모델
+		ResponseModel<ApplyModel> result = new ResponseModel<ApplyModel>();
+		
+		//세션조회
+		return commonService.getSession(request).flatMap(session -> {
+			
+			//로그인 체크
+			if(session.isLogin() == false) {
+				return Mono.error(new RuntimeException(Constant.CODE_NO_LOGIN));
+			}
+				
+			return request.bodyToFlux(AccountModel.class).collectList()
+				.flatMap(acctList -> accountService.applyAccount(acctList, session.getUserSeq()))
+				.flatMap(apply -> {
+					//응답
+					result.setData(apply);
+					result.setResultCode(Constant.CODE_SUCCESS);
+					return ServerResponse.ok()
+						.contentType(MediaType.APPLICATION_JSON)
+						.body(BodyInserters.fromValue(result));
+				//응답오류
+				}).onErrorResume(error -> {
+					result.setData(null);
+					result.setResultCode(error.getMessage());
+					return ServerResponse.ok()
+							.contentType(MediaType.APPLICATION_JSON)
+							.body(BodyInserters.fromValue(result));
+				});
+		});
 	}
 }

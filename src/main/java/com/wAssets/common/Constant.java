@@ -14,21 +14,27 @@ public interface Constant {
 	/* common */
 	public static final String Y = "Y";
 	public static final String N = "N";
-	public static final String GRID_STATE_SELECT = "SELECT";
-	public static final String GRID_STATE_INSERT = "INSERT";
-	public static final String GRID_STATE_UPDATE = "UPDATE";
-	public static final String GRID_STATE_REMOVE = "REMOVE";
+	public static final String GRID_STATE_SELECT = "SELECT";			//조회
+	public static final String GRID_STATE_INSERT = "INSERT";			//저장
+	public static final String GRID_STATE_UPDATE = "UPDATE";			//수정
+	public static final String GRID_STATE_REMOVE = "REMOVE";			//삭제
 	
-	public static final String CODE_SUCCESS = "0000";
-	public static final String CODE_SERVER_ERROR = "9000";
-	public static final String CODE_REPOSITORY_ERROR = "9001";
-	public static final String CODE_APPALY_EMPTY_ERROR = "9002";
-	public static final String CODE_INSERT_EMPTY_ERROR = "9003";
-	public static final String CODE_UPDATE_EMPTY_ERROR = "9004";
-	public static final String CODE_DELETE_EMPTY_ERROR = "9005";
-	public static final String CODE_UTIL_CONVERTER_ERROR = "9006";
-	public static final String CODE_DATA_EMPTY = "9400";
-	public static final String CODE_UNKNOWN_ERROR = "9999";
+	public static final String CODE_SUCCESS = "0000";					//성공
+	public static final String CODE_SERVER_ERROR = "9000";				//서버에러
+	public static final String CODE_REPOSITORY_ERROR = "9001";			//데이터베이스에러
+	public static final String CODE_APPALY_EMPTY = "9002";				//적용사항없음
+	public static final String CODE_INSERT_EMPTY = "9003";				//저장항목 없음
+	public static final String CODE_UPDATE_EMPTY = "9004";				//수정항목 없음
+	public static final String CODE_DELETE_EMPTY = "9005";				//삭제항목 없음
+	public static final String CODE_DATE_ERROR = "9020";				//날짜오류
+	public static final String CODE_NO_DATE_YYMMDD = "9021";			//날짜형식 YYMMDD가 아님
+	public static final String CODE_NO_DATE_YYYYMMDD = "9022";			//날짜형식 YYYYMMDD가 아님
+	public static final String CODE_NO_DATE_YYYYMMDDHHMM = "9023";		//날짜형식 YYYYMMDDHHMM가 아님
+	public static final String CODE_NO_DATE_YYYYMMDDHHMMSS = "9024";	//날짜형식 YYYYMMDDHHMMSS가 아님
+	public static final String CODE_DATA_EMPTY = "9400";				//데이터가 없음
+	public static final String CODE_ESSENTIAL_DATA_EMPTY = "9401";		//필수데이터가 없음
+	public static final String CODE_USER_DEFINED_ERROR = "9998";		//사용자정의오류
+	public static final String CODE_UNKNOWN_ERROR = "9999";				//알수없는오류
 	
 	/* member */
 	public static final String TOKEN = "SESSION_TOKEN";	
@@ -39,8 +45,5 @@ public interface Constant {
 	public static final String CODE_NO_LOGIN = "3000";
 	public static final String CODE_DIFF_PASSWORD = "3001";
 	public static final String CODE_NO_USER = "3002";
-	public static final String CODE_LOING_CHECK_ERROR = "3003";	
-	
-	/* assets */
-	public static final String CODE_VALIDATION_ACCOUNT = "4001";
+	public static final String CODE_LOING_CHECK_ERROR = "3003";
 }

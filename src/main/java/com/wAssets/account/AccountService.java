@@ -1,11 +1,15 @@
 package com.wAssets.account;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.reactive.function.server.ServerRequest;
 
 import com.wAssets.account.model.AccountModel;
+import com.wAssets.common.AssetsException;
 import com.wAssets.common.Constant;
 import com.wAssets.common.Utils;
 import com.wAssets.common.model.ApplyModel;
@@ -39,17 +43,17 @@ public class AccountService {
 						ObjectUtils.isEmpty(model.getEpyDtUseYn()) 	||					
 						ObjectUtils.isEmpty(model.getUseYn())
 				) {	
-					return Mono.error(new RuntimeException(Constant.CODE_VALIDATION_ACCOUNT));
+					return Mono.error(new RuntimeException(Constant.CODE_ESSENTIAL_DATA_EMPTY));
 				}
 				
 				//생성일 날짜형식 체크(YYYYMMDD)
 				if(Utils.isNotDate(model.getCratDt(), Constant.YYYYMMDD)) {
-					return Mono.error(new RuntimeException(Constant.CODE_VALIDATION_ACCOUNT));
+					return Mono.error(new RuntimeException(Constant.CODE_DATE_ERROR));
 					
 				//만기일 날짜형식 체크(YYYYMMDD)
 				}else if(Constant.Y.equals(model.getEpyDtUseYn())) {
 					if(Utils.isNotDate(model.getEpyDt(), Constant.YYYYMMDD)) {
-						return Mono.error(new RuntimeException(Constant.CODE_VALIDATION_ACCOUNT));
+						return Mono.error(new RuntimeException(Constant.CODE_DATE_ERROR));
 					}
 				}
 				
@@ -77,6 +81,62 @@ public class AccountService {
 			}
 		}catch(Exception e) {
 			return Mono.error(new RuntimeException(Constant.CODE_UNKNOWN_ERROR));
+		}
+	}
+	
+	/**
+	 * 계좌등록 밸류데이션
+	 * @param map
+	 * @return
+	 */
+	public String vaildAccount2(AccountModel model){
+		
+		//행 상태(insert, update)
+		if(Constant.GRID_STATE_INSERT.equals(model.get_state()) || Constant.GRID_STATE_UPDATE.equals(model.get_state())) {
+			
+			//빈값 체크			
+			if(ObjectUtils.isEmpty(model.getAcctTgtCd()) 		||
+					ObjectUtils.isEmpty(model.getAcctDivCd()) 	|| 
+					ObjectUtils.isEmpty(model.getAcctNum()) 	|| 
+					ObjectUtils.isEmpty(model.getCratDt()) 		|| 
+					ObjectUtils.isEmpty(model.getEpyDtUseYn()) 	||					
+					ObjectUtils.isEmpty(model.getUseYn())
+			) {	
+				return Constant.CODE_ESSENTIAL_DATA_EMPTY;
+			}
+			
+			//생성일 날짜형식 체크(YYYYMMDD)
+			if(Utils.isNotDate(model.getCratDt(), Constant.YYYYMMDD)) {
+				return Constant.CODE_DATE_ERROR;
+				
+			//만기일 날짜형식 체크(YYYYMMDD)
+			}else if(Constant.Y.equals(model.getEpyDtUseYn())) {
+				if(Utils.isNotDate(model.getEpyDt(), Constant.YYYYMMDD)) {
+					return Constant.CODE_DATE_ERROR;
+				}
+			}
+			
+			//정렬순서 값이 비어있을경우 0으로 세팅
+			if(ObjectUtils.isEmpty(model.getAcctOdr())) {
+				model.setAcctOdr(0);
+			}
+			//체크완료
+			return Constant.CODE_SUCCESS;
+			
+		//행 상태(delete)
+		}else if(Constant.GRID_STATE_REMOVE.equals(model.get_state())) {
+			
+			//가계부에 사용되는 계좌인지 체크
+			//if() {
+			//	new RuntimeException(Constant.)
+			//}
+			
+			//체크완료
+			return Constant.CODE_SUCCESS;
+			
+		//그 외의 행 상태
+		}else {
+			return Constant.CODE_UNKNOWN_ERROR;
 		}
 	}
 	
@@ -163,24 +223,39 @@ public class AccountService {
 	 * @param userSeq
 	 * @return
 	 */
-	public Mono<ApplyModel> applyAccount(AccountModel account, int userSeq){
+	@Transactional
+	public Mono<ApplyModel> applyAccount(List<AccountModel> acctList, int userSeq){
 		
-		//사용자 번호 세팅
-		account.setUserSeq(userSeq);
-		Mono<ApplyModel> result = null; 
+		//적용회수 반환 모델
+		ApplyModel apply = new ApplyModel();
 		
-		//저장, 수정, 삭제 분기
-		switch(account.get_state()) {
-		case Constant.GRID_STATE_INSERT :
-			result = this.insertAccount(account).flatMap(count -> Mono.just(new ApplyModel(1, count)));
-			break;
-		case Constant.GRID_STATE_UPDATE :
-			result = this.updateAccount(account).flatMap(count -> Mono.just(new ApplyModel(0, count)));
-			break;
-		case Constant.GRID_STATE_REMOVE : 
-			result = this.deleteAccount(account).flatMap(count -> Mono.just(new ApplyModel(-1, count)));
-			break;
-		}
-		return result;
-	}		
+		//적용할 계좌목록
+		return Flux.fromStream(acctList.stream())
+			.flatMap(account -> {
+				account.setUserSeq(userSeq);
+				
+				String vaild = this.vaildAccount2(account);
+				if(Constant.CODE_SUCCESS.equals(vaild) == false) {
+					return Mono.error(new AssetsException(vaild));
+				}
+				
+				//저장, 수정, 삭제 분기
+				switch(account.get_state()) {
+				case Constant.GRID_STATE_INSERT :
+					return this.insertAccount(account).flatMap(count -> {
+						apply.insertPlus(); return Mono.empty();
+					});
+				case Constant.GRID_STATE_UPDATE :
+					return this.updateAccount(account).flatMap(count -> {
+						apply.updatePlus(); return Mono.empty();
+					});
+				case Constant.GRID_STATE_REMOVE : 
+					return this.deleteAccount(account).flatMap(count -> {
+						apply.deletePlus(); return Mono.empty();
+					});
+				default : 
+					return Mono.empty();
+				}
+			}).collectList().flatMap(m -> Mono.just(apply));
+	}
 }
