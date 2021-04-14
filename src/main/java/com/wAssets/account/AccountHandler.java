@@ -1,6 +1,5 @@
 package com.wAssets.account;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +10,7 @@ import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 
 import com.wAssets.account.model.AccountModel;
+import com.wAssets.common.AssetsException;
 import com.wAssets.common.CommonService;
 import com.wAssets.common.Constant;
 import com.wAssets.common.model.ApplyModel;
@@ -34,22 +34,18 @@ public class AccountHandler {
 	 */
 	public Mono<ServerResponse> saveAccount(ServerRequest request){
 		
+		//응답모델
 		ResponseModel<AccountModel> result = new ResponseModel<AccountModel>();
 		
 		return request.bodyToMono(AccountModel.class)
-			//계좌 밸류데이션체크
-			.flatMap(accountService::vaildAccount)
-			//세션조회
-			.zipWith(commonService.getSession(request))
-			//계좌 저장
-			.flatMap(tuple -> {
+			.zipWith(commonService.getSession(request)).flatMap(tuple -> {
 				//로그인 확인
 				if(tuple.getT2().isLogin()) {
 					AccountModel account = tuple.getT1();
 					account.setUserSeq(tuple.getT2().getUserSeq());
 					return accountService.insertAccount(account);
 				}else {
-					return Mono.error(new RuntimeException(Constant.CODE_NO_LOGIN));
+					return Mono.error(new AssetsException(Constant.CODE_NO_LOGIN));
 				}
 			})
 			//성공확인
@@ -67,8 +63,14 @@ public class AccountHandler {
 						.contentType(MediaType.APPLICATION_JSON)
 						.body(BodyInserters.fromValue(result));
 				}
-			})
-			.onErrorResume(error -> {
+			//정의된 응답오류
+			}).onErrorResume(AssetsException.class, error -> {
+				result.setResultCode(error.getCode());
+				return ServerResponse.ok()
+						.contentType(MediaType.APPLICATION_JSON)
+						.body(BodyInserters.fromValue(result));
+			//응답오류
+			}).onErrorResume(error -> {
 				result.setResultCode(error.getMessage());
 				return ServerResponse.ok()						
 						.contentType(MediaType.APPLICATION_JSON)
@@ -89,18 +91,22 @@ public class AccountHandler {
 		//세션조회
 		return commonService.getSession(request)
 			//계좌목록 조회
-			.flatMap(sesson -> accountService.selectAccountList(request, sesson).collectList())
-			//응답
-			.flatMap(fm -> {
+			.flatMap(sesson -> accountService.selectAccountList(request.queryParams() , sesson).collectList())
+			.flatMap(acctList -> {
 				//응답
-				result.setData(fm);
+				result.setData(acctList);
 				result.setResultCode(Constant.CODE_SUCCESS);
 				return ServerResponse.ok()
 					.contentType(MediaType.APPLICATION_JSON)
 					.body(BodyInserters.fromValue(result));
+			//정의된 응답오류
+			}).onErrorResume(AssetsException.class, error -> {
+				result.setResultCode(error.getCode());
+				return ServerResponse.ok()
+						.contentType(MediaType.APPLICATION_JSON)
+						.body(BodyInserters.fromValue(result));
 			//응답오류
 			}).onErrorResume(error -> {
-				result.setData(new ArrayList<AccountModel>());
 				result.setResultCode(error.getMessage());
 				return ServerResponse.ok()
 						.contentType(MediaType.APPLICATION_JSON)
@@ -121,8 +127,7 @@ public class AccountHandler {
 		//세션조회
 		return commonService.getSession(request)
 			//계좌목록 조회
-			.flatMap(sesson -> accountService.selectAccount(request, sesson))
-			//응답
+			.flatMap(sesson -> accountService.selectAccount(request.queryParams(), sesson))
 			.flatMap(account -> {
 				//응답
 				result.setData(account);
@@ -130,10 +135,15 @@ public class AccountHandler {
 				return ServerResponse.ok()
 					.contentType(MediaType.APPLICATION_JSON)
 					.body(BodyInserters.fromValue(result));
+			//정의된 응답오류
+			}).onErrorResume(AssetsException.class, error -> {
+				result.setResultCode(error.getCode());
+				return ServerResponse.ok()
+						.contentType(MediaType.APPLICATION_JSON)
+						.body(BodyInserters.fromValue(result));
 			//응답오류
 			}).onErrorResume(error -> {
-				result.setData(new AccountModel());
-				result.setResultCode(error.getMessage());
+				result.setResultCode(Constant.CODE_SERVER_ERROR);
 				return ServerResponse.ok()
 						.contentType(MediaType.APPLICATION_JSON)
 						.body(BodyInserters.fromValue(result));
@@ -167,10 +177,15 @@ public class AccountHandler {
 					return ServerResponse.ok()
 						.contentType(MediaType.APPLICATION_JSON)
 						.body(BodyInserters.fromValue(result));
+				//정의된 응답오류
+				}).onErrorResume(AssetsException.class, error -> {
+					result.setResultCode(error.getCode());
+					return ServerResponse.ok()
+							.contentType(MediaType.APPLICATION_JSON)
+							.body(BodyInserters.fromValue(result));
 				//응답오류
 				}).onErrorResume(error -> {
-					result.setData(null);
-					result.setResultCode(error.getMessage());
+					result.setResultCode(Constant.CODE_SERVER_ERROR);
 					return ServerResponse.ok()
 							.contentType(MediaType.APPLICATION_JSON)
 							.body(BodyInserters.fromValue(result));
