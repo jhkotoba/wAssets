@@ -42,7 +42,7 @@ public class AccountHandler {
 				//로그인 확인
 				if(tuple.getT2().isLogin()) {
 					AccountModel account = tuple.getT1();
-					account.setUserSeq(tuple.getT2().getUserSeq());
+					account.setUserNo(tuple.getT2().getUserNo());
 					return accountService.insertAccount(account);
 				}else {
 					return Mono.error(new AssetsException(Constant.CODE_NO_LOGIN));
@@ -169,7 +169,7 @@ public class AccountHandler {
 			}
 				
 			return request.bodyToFlux(AccountModel.class).collectList()
-				.flatMap(acctList -> accountService.applyAccount(acctList, session.getUserSeq()))
+				.flatMap(acctList -> accountService.applyAccount(acctList, session.getUserNo()))
 				.flatMap(apply -> {
 					//응답
 					result.setData(apply);

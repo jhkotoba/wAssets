@@ -31,8 +31,8 @@ public class AccountRepository {
 		StringBuilder query = new StringBuilder();
 		query.append("/* AccountRepository.insertAccount */");
 		query.append("INSERT INTO ACCOUNT(");
-		query.append("USER_SEQ /* 사용자시퀀스 */");
-		query.append(", ACCT_ODR /* 계좌순번 */");
+		query.append("USER_NO /* 사용자번호 */");
+		query.append(", ACCT_SEQ /* 계좌순서 */");
 		query.append(", ACCT_TGT_CD /* 계좌유형코드 */");
 		query.append(", ACCT_DIV_CD /* 계좌구분코드 */");
 		query.append(", ACCT_NUM /* 계좌번호 */");
@@ -49,14 +49,13 @@ public class AccountRepository {
 			query.append(", EPY_DT /* 만기일 */");
 		}
 		query.append(", USE_YN /* 사용여부 */");
-		if(ObjectUtils.isEmpty(model.getRemark()) == false){
-			query.append(", REMARK /* 비고 */");
+		if(ObjectUtils.isEmpty(model.getRemark()) == false){			query.append(", REMARK /* 비고 */");
 		}
 		query.append(", REG_DTTM /* 등록일시 */");
 		query.append(", MOD_DTTM /* 수정일시 */");
 		query.append(")VALUES(");
-		query.append(model.getUserSeq());									//사용자시퀀스
-		query.append(", " +  model.getAcctOdr());							//계좌순번
+		query.append(model.getUserNo());									//사용자시퀀스
+		query.append(", " +  model.getAcctSeq());							//계좌순서
 		query.append(", '" +  model.getAcctTgtCd() + "'");					//계좌유형코드
 		query.append(", '" +  model.getAcctDivCd() + "'");					//계좌구분코드
 		query.append(", '" +  model.getAcctNum() + "'");					//계좌번호
@@ -91,7 +90,7 @@ public class AccountRepository {
 		
 		StringBuilder query = new StringBuilder("/* AccountRepository.updateAccount */");
 		query.append(" UPDATE ACCOUNT /* [계좌] */");
-		query.append(" SET ACCT_ODR = ").append(model.getAcctOdr());
+		query.append(" SET ACCT_SEQ = ").append(model.getAcctSeq());
 		query.append(" , ACCT_TGT_CD = ").append("'").append(model.getAcctTgtCd()).append("'");
 		query.append(" , ACCT_DIV_CD = ").append("'").append(model.getAcctDivCd()).append("'");
 		query.append(" , ACCT_NUM = ").append("'").append(model.getAcctNum()).append("'");
@@ -109,8 +108,8 @@ public class AccountRepository {
 		query.append(" , EPY_DT_USE_YN = ").append("'").append(model.getEpyDtUseYn()).append("'");
 		query.append(" , REMARK = ").append("'").append(model.getRemark()).append("'");
 		query.append(" , MOD_DTTM = NOW()");
-		query.append(" WHERE ACCT_SEQ = ").append(model.getAcctSeq());
-		query.append(" AND USER_SEQ = ").append(model.getUserSeq());
+		query.append(" WHERE ACCT_IDX = ").append(model.getAcctIdx());
+		query.append(" AND USER_NO = ").append(model.getUserNo());
 		
 		return client.sql(query.toString()).fetch().rowsUpdated();
 	}
@@ -124,8 +123,8 @@ public class AccountRepository {
 		StringBuilder query = new StringBuilder();
 		query.append("/* AccountRepository.deleteAccount */		");
 		query.append(" DELETE FROM ACCOUNT /* [계좌] */");
-		query.append(" WHERE USER_SEQ = ").append(model.getUserSeq());
-		query.append(" AND ACCT_SEQ = ").append(model.getAcctSeq());
+		query.append(" WHERE USER_NO = ").append(model.getUserNo());
+		query.append(" AND ACCT_IDX = ").append(model.getAcctIdx());
 		
 		return client.sql(query.toString()).fetch().rowsUpdated();
 	}
@@ -133,14 +132,14 @@ public class AccountRepository {
 	/**
 	 * 계좌목록 조회
 	 * @param params
-	 * @param userSeq
+	 * @param userNo
 	 * @return
 	 */
-	public Flux<AccountModel> selectAccountList(MultiValueMap<String, String> params, Integer userSeq){
+	public Flux<AccountModel> selectAccountList(MultiValueMap<String, String> params, String userNo){
 		StringBuilder sql = new StringBuilder("/* AccountRepository.selectAccountList */ ");
 		sql.append("SELECT ");
-		sql.append("ACCT_SEQ /* 계좌 시퀀스 */");
-		sql.append(",ACCT_ODR /* 계좌순번 */");
+		sql.append("ACCT_IDX /* 계좌 인덱스 */");
+		sql.append(",ACCT_SEQ /* 계좌순서 */");
 		sql.append(",ACCT_TGT_CD /* 계좌유형코드 */");
 		sql.append(",ACCT_DIV_CD /* 계좌구분코드 */");
 		sql.append(",ACCT_NUM /* 계좌번호 */");
@@ -153,7 +152,7 @@ public class AccountRepository {
 		sql.append(",USE_YN /* 사용여부 */");
 		sql.append(",DATE_FORMAT(REG_DTTM, '%Y-%m-%d %H:%i:%S') AS REG_DTTM /* 등록일시 */");
 		sql.append(",DATE_FORMAT(MOD_DTTM, '%Y-%m-%d %H:%i:%S') AS MOD_DTTM /* 수정일시 */");
-		sql.append("FROM ACCOUNT /* [계좌] */ WHERE 1=1 AND USER_SEQ = ").append(userSeq);
+		sql.append("FROM ACCOUNT /* [계좌] */ WHERE 1=1 AND USER_NO = ").append(userNo);
 		
 		return client.sql(sql.toString())
 			.fetch()
@@ -165,14 +164,14 @@ public class AccountRepository {
 	/**
 	 * 계좌정보 조회
 	 * @param params
-	 * @param userSeq
+	 * @param userNo
 	 * @return
 	 */
-	public Mono<AccountModel> selectAccount(MultiValueMap<String, String> params, Integer userSeq){
+	public Mono<AccountModel> selectAccount(MultiValueMap<String, String> params, String userNo){
 		StringBuilder sql = new StringBuilder("/* AccountRepository.selectAccount */ ");
 		sql.append("SELECT ");
-		sql.append("ACCT_SEQ ");
-		sql.append(",ACCT_ODR ");
+		sql.append("ACCT_IDX ");
+		sql.append(",ACCT_SEQ ");
 		sql.append(",ACCT_TGT_CD ");
 		sql.append(",ACCT_DIV_CD ");
 		sql.append(",ACCT_NUM ");
@@ -185,8 +184,8 @@ public class AccountRepository {
 		sql.append(",USE_YN ");
 		sql.append(",DATE_FORMAT(REG_DTTM, '%Y-%m-%d %H:%i:%S') AS REG_DTTM ");
 		sql.append(",DATE_FORMAT(MOD_DTTM, '%Y-%m-%d %H:%i:%S') AS MOD_DTTM ");
-		sql.append("FROM ACCOUNT WHERE 1=1 AND USER_SEQ = ").append(userSeq);
-		sql.append("AND ACCT_SEQ = ").append(params.getFirst("acctSeq"));
+		sql.append("FROM ACCOUNT WHERE 1=1 AND USER_SEQ = ").append(userNo);
+		sql.append("AND ACCT_IDX = ").append(params.getFirst("acctIdx"));
 		return client.sql(sql.toString())
 			.fetch()
 			.one()			

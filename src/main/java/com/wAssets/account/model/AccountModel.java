@@ -5,13 +5,13 @@ import com.wAssets.common.model.CommonModel;
 public class AccountModel extends CommonModel{
 	
 	//계좌 시퀀스
-	private Integer acctSeq;
+	private Integer acctIdx;
 	
 	//계좌 정렬순서
-	private Integer acctOdr;
+	private Integer acctSeq;
 	
 	//유저 시퀀스
-	private Integer userSeq;	
+	private String userNo;	
 	
 	//계좌사용처코드
 	private String acctTgtCd;
@@ -52,6 +52,14 @@ public class AccountModel extends CommonModel{
 	//수정일시
 	private String modDttm;
 
+	public Integer getAcctIdx() {
+		return acctIdx;
+	}
+
+	public void setAcctIdx(Integer acctIdx) {
+		this.acctIdx = acctIdx;
+	}
+
 	public Integer getAcctSeq() {
 		return acctSeq;
 	}
@@ -59,21 +67,13 @@ public class AccountModel extends CommonModel{
 	public void setAcctSeq(Integer acctSeq) {
 		this.acctSeq = acctSeq;
 	}
-	
-	public Integer getAcctOdr() {
-		return acctOdr;
+
+	public String getUserNo() {
+		return userNo;
 	}
 
-	public void setAcctOdr(Integer acctOdr) {
-		this.acctOdr = acctOdr;
-	}
-
-	public Integer getUserSeq() {
-		return userSeq;
-	}
-
-	public void setUserSeq(Integer userSeq) {
-		this.userSeq = userSeq;
+	public void setUserNo(String userNo) {
+		this.userNo = userNo;
 	}
 
 	public String getAcctTgtCd() {
@@ -182,11 +182,12 @@ public class AccountModel extends CommonModel{
 
 	@Override
 	public String toString() {
-		return "AccountModel [acctSeq=" + acctSeq + ", userSeq=" + userSeq + ", acctTgtCd=" + acctTgtCd + ", acctDivCd="
-				+ acctDivCd + ", acctNum=" + acctNum + ", acctNm=" + acctNm + ", fontClor=" + fontClor + ", bkgdClor="
-				+ bkgdClor + ", cratDt=" + cratDt + ", epyDtUseYn=" + epyDtUseYn + ", epyDt=" + epyDt + ", useYn="
-				+ useYn + ", remark=" + remark + ", regDttm=" + regDttm + ", modDttm=" + modDttm + "]";
-	}
+		return "AccountModel [acctIdx=" + acctIdx + ", acctSeq=" + acctSeq + ", userNo=" + userNo + ", acctTgtCd="
+				+ acctTgtCd + ", acctDivCd=" + acctDivCd + ", acctNum=" + acctNum + ", acctNm=" + acctNm + ", fontClor="
+				+ fontClor + ", bkgdClor=" + bkgdClor + ", cratDt=" + cratDt + ", epyDtUseYn=" + epyDtUseYn + ", epyDt="
+				+ epyDt + ", useYn=" + useYn + ", remark=" + remark + ", regDttm=" + regDttm + ", modDttm=" + modDttm
+				+ "]";
+	}	
 }
 	
 	

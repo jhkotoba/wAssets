@@ -63,8 +63,8 @@ public class AccountService {
 			}
 			
 			//정렬순서 값이 비어있을경우 0으로 세팅
-			if(ObjectUtils.isEmpty(model.getAcctOdr())) {
-				model.setAcctOdr(0);
+			if(ObjectUtils.isEmpty(model.getAcctSeq())) {
+				model.setAcctSeq(0);
 			}
 			//체크완료
 			return Constant.CODE_SUCCESS;
@@ -127,7 +127,7 @@ public class AccountService {
 	 * @return
 	 */
 	public Flux<AccountModel> selectAccountList(MultiValueMap<String, String> multParam, SessionModel session){
-		return accountRepository.selectAccountList(multParam, session.getUserSeq());
+		return accountRepository.selectAccountList(multParam, session.getUserNo());
 	}
 	
 	/**
@@ -137,17 +137,17 @@ public class AccountService {
 	 * @return
 	 */
 	public Mono<AccountModel> selectAccount(MultiValueMap<String, String> multParam, SessionModel session){
-		return accountRepository.selectAccount(multParam, session.getUserSeq());
+		return accountRepository.selectAccount(multParam, session.getUserNo());
 	}
 	
 	/**
 	 * 계좌적용 (저장, 수정, 삭제)
 	 * @param account
-	 * @param userSeq
+	 * @param userNo
 	 * @return
 	 */
 	@Transactional
-	public Mono<ApplyModel> applyAccount(List<AccountModel> acctList, int userSeq){
+	public Mono<ApplyModel> applyAccount(List<AccountModel> acctList, String userNo){
 		
 		//적용 반환 모델
 		ApplyModel apply = new ApplyModel();
@@ -155,7 +155,7 @@ public class AccountService {
 		//적용할 계좌목록
 		return Flux.fromStream(acctList.stream())
 			.flatMap(account -> {
-				account.setUserSeq(userSeq);
+				account.setUserNo(userNo);
 				
 				//유효성 검사
 				String vaild = this.vaildAccount(account);

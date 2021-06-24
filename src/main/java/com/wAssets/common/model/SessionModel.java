@@ -6,7 +6,7 @@ public class SessionModel {
 	private String loginYn;
 	
 	//사용자번호
-	private Integer userSeq;
+	private String userNo;
 	
 	//사용자 아이디
 	private String userId;
@@ -23,12 +23,12 @@ public class SessionModel {
 		this.loginYn = loginYn;
 	}
 
-	public Integer getUserSeq() {
-		return userSeq;
+	public String getUserNo() {
+		return userNo;
 	}
 
-	public void setUserSeq(Integer userSeq) {
-		this.userSeq = userSeq;
+	public void setUserNo(String userNo) {
+		this.userNo = userNo;
 	}
 
 	public String getUserId() {
