@@ -47,10 +47,10 @@ public class AccountModel extends CommonModel{
 	private String remark;
 	
 	//등록일시
-	private String regDttm;
+	private String insDttm;
 	
 	//수정일시
-	private String modDttm;
+	private String uptDttm;
 
 	public Integer getAcctIdx() {
 		return acctIdx;
@@ -164,20 +164,20 @@ public class AccountModel extends CommonModel{
 		this.remark = remark;
 	}
 
-	public String getRegDttm() {
-		return regDttm;
+	public String getInsDttm() {
+		return insDttm;
 	}
 
-	public void setRegDttm(String regDttm) {
-		this.regDttm = regDttm;
+	public void setInsDttm(String insDttm) {
+		this.insDttm = insDttm;
 	}
 
 	public String getModDttm() {
-		return modDttm;
+		return uptDttm;
 	}
 
 	public void setModDttm(String modDttm) {
-		this.modDttm = modDttm;
+		this.uptDttm = modDttm;
 	}
 
 	@Override
@@ -185,7 +185,7 @@ public class AccountModel extends CommonModel{
 		return "AccountModel [acctIdx=" + acctIdx + ", acctSeq=" + acctSeq + ", userNo=" + userNo + ", acctTgtCd="
 				+ acctTgtCd + ", acctDivCd=" + acctDivCd + ", acctNum=" + acctNum + ", acctNm=" + acctNm + ", fontClor="
 				+ fontClor + ", bkgdClor=" + bkgdClor + ", cratDt=" + cratDt + ", epyDtUseYn=" + epyDtUseYn + ", epyDt="
-				+ epyDt + ", useYn=" + useYn + ", remark=" + remark + ", regDttm=" + regDttm + ", modDttm=" + modDttm
+				+ epyDt + ", useYn=" + useYn + ", remark=" + remark + ", insDttm=" + insDttm + ", uptDttm=" + uptDttm
 				+ "]";
 	}	
 }

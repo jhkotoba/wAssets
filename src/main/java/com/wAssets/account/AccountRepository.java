@@ -51,8 +51,8 @@ public class AccountRepository {
 		query.append(", USE_YN /* 사용여부 */");
 		if(ObjectUtils.isEmpty(model.getRemark()) == false){			query.append(", REMARK /* 비고 */");
 		}
-		query.append(", REG_DTTM /* 등록일시 */");
-		query.append(", MOD_DTTM /* 수정일시 */");
+		query.append(", INS_DTTM /* 등록일시 */");
+		query.append(", UPT_DTTM /* 수정일시 */");
 		query.append(")VALUES(");
 		query.append(model.getUserNo());									//사용자시퀀스
 		query.append(", " +  model.getAcctSeq());							//계좌순서
@@ -150,8 +150,8 @@ public class AccountRepository {
 		sql.append(",EPY_DT_USE_YN /* 만기일 사용여부 */");
 		sql.append(",EPY_DT /* 만기일 */");
 		sql.append(",USE_YN /* 사용여부 */");
-		sql.append(",DATE_FORMAT(REG_DTTM, '%Y-%m-%d %H:%i:%S') AS REG_DTTM /* 등록일시 */");
-		sql.append(",DATE_FORMAT(MOD_DTTM, '%Y-%m-%d %H:%i:%S') AS MOD_DTTM /* 수정일시 */");
+		sql.append(",DATE_FORMAT(INS_DTTM, '%Y-%m-%d %H:%i:%S') AS INS_DTTM /* 등록일시 */");
+		sql.append(",DATE_FORMAT(UPT_DTTM, '%Y-%m-%d %H:%i:%S') AS UPT_DTTM /* 수정일시 */");
 		sql.append("FROM ACCOUNT /* [계좌] */ WHERE 1=1 AND USER_NO = ").append(userNo);
 		
 		return client.sql(sql.toString())
