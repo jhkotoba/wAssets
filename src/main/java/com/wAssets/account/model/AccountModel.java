@@ -4,14 +4,14 @@ import com.wAssets.common.model.CommonModel;
 
 public class AccountModel extends CommonModel{
 	
-	//계좌 시퀀스
+	//계좌 인덱스
 	private Integer acctIdx;
 	
 	//계좌 정렬순서
 	private Integer acctSeq;
 	
-	//유저 시퀀스
-	private String userNo;	
+	//유저번호
+	private String userNo;
 	
 	//계좌사용처코드
 	private String acctTgtCd;

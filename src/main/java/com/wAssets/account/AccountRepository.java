@@ -54,7 +54,7 @@ public class AccountRepository {
 		query.append(", INS_DTTM /* 등록일시 */");
 		query.append(", UPT_DTTM /* 수정일시 */");
 		query.append(")VALUES(");
-		query.append(model.getUserNo());									//사용자시퀀스
+		query.append("'" + model.getUserNo() + "'");									//사용자시퀀스
 		query.append(", " +  model.getAcctSeq());							//계좌순서
 		query.append(", '" +  model.getAcctTgtCd() + "'");					//계좌유형코드
 		query.append(", '" +  model.getAcctDivCd() + "'");					//계좌구분코드

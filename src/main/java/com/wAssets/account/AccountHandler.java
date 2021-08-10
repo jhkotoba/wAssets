@@ -32,8 +32,7 @@ public class AccountHandler {
 	 * @param request
 	 * @return
 	 */
-	public Mono<ServerResponse> saveAccount(ServerRequest request){
-		
+	public Mono<ServerResponse> saveAccount(ServerRequest request){		
 		//응답모델
 		ResponseModel<AccountModel> result = new ResponseModel<AccountModel>();
 		
@@ -83,8 +82,7 @@ public class AccountHandler {
 	 * @param request
 	 * @return
 	 */
-	public Mono<ServerResponse> getAccountList(ServerRequest request){
-		
+	public Mono<ServerResponse> getAccountList(ServerRequest request){		
 		//응답모델
 		ResponseModel<List<AccountModel>> result = new ResponseModel<List<AccountModel>>();
 		
@@ -120,7 +118,6 @@ public class AccountHandler {
 	 * @return
 	 */
 	public Mono<ServerResponse> getAccount(ServerRequest request){
-		
 		//응답모델
 		ResponseModel<AccountModel> result = new ResponseModel<AccountModel>();
 		
@@ -155,8 +152,7 @@ public class AccountHandler {
 	 * @param request
 	 * @return
 	 */
-	public Mono<ServerResponse> applyAccount(ServerRequest request){
-		
+	public Mono<ServerResponse> applyAccount(ServerRequest request){		
 		//응답모델
 		ResponseModel<ApplyModel> result = new ResponseModel<ApplyModel>();
 		
@@ -165,7 +161,7 @@ public class AccountHandler {
 			
 			//로그인 체크
 			if(session.isLogin() == false) {
-				return Mono.error(new RuntimeException(Constant.CODE_NO_LOGIN));
+				return Mono.error(new AssetsException(Constant.CODE_NO_LOGIN));
 			}
 				
 			return request.bodyToFlux(AccountModel.class).collectList()
