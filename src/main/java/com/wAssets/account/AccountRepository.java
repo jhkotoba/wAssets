@@ -152,7 +152,7 @@ public class AccountRepository {
 		sql.append(",USE_YN /* 사용여부 */");
 		sql.append(",DATE_FORMAT(INS_DTTM, '%Y-%m-%d %H:%i:%S') AS INS_DTTM /* 등록일시 */");
 		sql.append(",DATE_FORMAT(UPT_DTTM, '%Y-%m-%d %H:%i:%S') AS UPT_DTTM /* 수정일시 */");
-		sql.append("FROM ACCOUNT /* [계좌] */ WHERE 1=1 AND USER_NO = ").append(userNo);
+		sql.append("FROM ACCOUNT /* [계좌] */ WHERE 1=1 AND USER_NO = '").append(userNo).append("'");
 		
 		return client.sql(sql.toString())
 			.fetch()
