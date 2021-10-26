@@ -28,8 +28,6 @@ public class Utils {
 		
 		if(Objects.isNull(date)) {
 			return false;
-		}else if(date.length() != 8) {
-			return false;
 		}
 		
 		Pattern p = Pattern.compile(pattern);
@@ -38,15 +36,14 @@ public class Utils {
 		if(m.find()) {
 			
 			int year = Integer.parseInt(date.substring(0, 4));
-			int month = Integer.parseInt(date.substring(4, 6));
-			int day = Integer.parseInt(date.substring(6, 8));
+			int month = Integer.parseInt(date.substring(5, 7));
+			int day = Integer.parseInt(date.substring(8, 10));
 			
 			if(month < 1 || month > 12 ) {
                 return false;
             }
-
-            int[] lastDays = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
-            int maxDay = lastDays[month-1];
+            
+            int maxDay = Constant.LAST_DAYS[month-1];
             
             if(month == 2 && (year % 4 == 0 && year % 100 != 0 || year % 400 == 0)){
                 maxDay = 29;

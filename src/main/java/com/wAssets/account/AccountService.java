@@ -5,6 +5,7 @@ import java.util.Objects;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.MultiValueMap;
 import org.springframework.util.ObjectUtils;
@@ -146,7 +147,7 @@ public class AccountService {
 	 * @param userNo
 	 * @return
 	 */
-	@Transactional
+	@Transactional(propagation = Propagation.REQUIRED)
 	public Mono<ApplyModel> applyAccount(List<AccountModel> acctList, String userNo){
 		
 		//적용 반환 모델
