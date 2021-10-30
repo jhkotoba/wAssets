@@ -107,9 +107,9 @@ public class AccountRepository {
 		query.append(" , USE_YN = ").append("'").append(model.getUseYn()).append("'");
 		query.append(" , EPY_DT_USE_YN = ").append("'").append(model.getEpyDtUseYn()).append("'");
 		query.append(" , REMARK = ").append("'").append(model.getRemark()).append("'");
-		query.append(" , MOD_DTTM = NOW()");
+		query.append(" , UPT_DTTM = NOW()");
 		query.append(" WHERE ACCT_IDX = ").append(model.getAcctIdx());
-		query.append(" AND USER_NO = ").append(model.getUserNo());
+		query.append(" AND USER_NO = '").append(model.getUserNo()).append("'");
 		
 		return client.sql(query.toString()).fetch().rowsUpdated();
 	}
@@ -123,7 +123,7 @@ public class AccountRepository {
 		StringBuilder query = new StringBuilder();
 		query.append("/* AccountRepository.deleteAccount */		");
 		query.append(" DELETE FROM ACCOUNT /* [계좌] */");
-		query.append(" WHERE USER_NO = ").append(model.getUserNo());
+		query.append(" WHERE USER_NO = '").append(model.getUserNo()).append("'");
 		query.append(" AND ACCT_IDX = ").append(model.getAcctIdx());
 		
 		return client.sql(query.toString()).fetch().rowsUpdated();
@@ -139,19 +139,19 @@ public class AccountRepository {
 		StringBuilder sql = new StringBuilder("/* AccountRepository.selectAccountList */ ");
 		sql.append("SELECT ");
 		sql.append("ACCT_IDX /* 계좌 인덱스 */");
-		sql.append(",ACCT_SEQ /* 계좌순서 */");
-		sql.append(",ACCT_TGT_CD /* 계좌유형코드 */");
-		sql.append(",ACCT_DIV_CD /* 계좌구분코드 */");
-		sql.append(",ACCT_NUM /* 계좌번호 */");
-		sql.append(",ACCT_NM /* 계좌명 */");
-		sql.append(",FONT_CLOR /* 글자색 */");
-		sql.append(",BKGD_CLOR /* 배경색 */");
-		sql.append(",CRAT_DT /* 생성일자 */");
-		sql.append(",EPY_DT_USE_YN /* 만기일 사용여부 */");
-		sql.append(",EPY_DT /* 만기일 */");
-		sql.append(",USE_YN /* 사용여부 */");
-		sql.append(",DATE_FORMAT(INS_DTTM, '%Y-%m-%d %H:%i:%S') AS INS_DTTM /* 등록일시 */");
-		sql.append(",DATE_FORMAT(UPT_DTTM, '%Y-%m-%d %H:%i:%S') AS UPT_DTTM /* 수정일시 */");
+		sql.append(", ACCT_SEQ /* 계좌순서 */");
+		sql.append(", ACCT_TGT_CD /* 계좌유형코드 */");
+		sql.append(", ACCT_DIV_CD /* 계좌구분코드 */");
+		sql.append(", ACCT_NUM /* 계좌번호 */");
+		sql.append(", ACCT_NM /* 계좌명 */");
+		sql.append(", FONT_CLOR /* 글자색 */");
+		sql.append(", BKGD_CLOR /* 배경색 */");
+		sql.append(", IFNULL(CRAT_DT, '') AS CRAT_DT /* 생성일자 */");
+		sql.append(", EPY_DT_USE_YN /* 만기일 사용여부 */");
+		sql.append(", IFNULL(EPY_DT, '') AS EPY_DT /* 만기일 */");
+		sql.append(", USE_YN /* 사용여부 */");
+		sql.append(", DATE_FORMAT(INS_DTTM, '%Y-%m-%d %H:%i:%S') AS INS_DTTM /* 등록일시 */");
+		sql.append(", DATE_FORMAT(UPT_DTTM, '%Y-%m-%d %H:%i:%S') AS UPT_DTTM /* 수정일시 */");
 		sql.append("FROM ACCOUNT /* [계좌] */ WHERE 1=1 AND USER_NO = '").append(userNo).append("'");
 		
 		return client.sql(sql.toString())
@@ -182,8 +182,8 @@ public class AccountRepository {
 		sql.append(",EPY_DT_USE_YN ");
 		sql.append(",EPY_DT ");
 		sql.append(",USE_YN ");
-		sql.append(",DATE_FORMAT(REG_DTTM, '%Y-%m-%d %H:%i:%S') AS REG_DTTM ");
-		sql.append(",DATE_FORMAT(MOD_DTTM, '%Y-%m-%d %H:%i:%S') AS MOD_DTTM ");
+		sql.append(",DATE_FORMAT(INS_DTTM, '%Y-%m-%d %H:%i:%S') AS INS_DTTM ");
+		sql.append(",DATE_FORMAT(UPT_DTTM, '%Y-%m-%d %H:%i:%S') AS UPT_DTTM ");
 		sql.append("FROM ACCOUNT WHERE 1=1 AND USER_SEQ = ").append(userNo);
 		sql.append("AND ACCT_IDX = ").append(params.getFirst("acctIdx"));
 		return client.sql(sql.toString())

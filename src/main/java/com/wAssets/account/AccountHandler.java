@@ -175,12 +175,14 @@ public class AccountHandler {
 						.body(BodyInserters.fromValue(result));
 				//정의된 응답오류
 				}).onErrorResume(AssetsException.class, error -> {
+					error.printStackTrace();
 					result.setResultCode(error.getCode());
 					return ServerResponse.ok()
 							.contentType(MediaType.APPLICATION_JSON)
 							.body(BodyInserters.fromValue(result));
 				//응답오류
 				}).onErrorResume(error -> {
+					error.printStackTrace();
 					result.setResultCode(Constant.CODE_SERVER_ERROR);
 					return ServerResponse.ok()
 							.contentType(MediaType.APPLICATION_JSON)
