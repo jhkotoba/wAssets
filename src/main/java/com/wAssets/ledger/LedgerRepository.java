@@ -85,18 +85,17 @@ public class LedgerRepository extends CommonRepository{
 	 * @param ledger
 	 * @return
 	 */
-	public Mono<Integer> insertBasicLedger(LedgerModel ledger){
+	public Mono<Integer> insertLedger(LedgerModel ledger){
 		
 		StringBuilder query = new StringBuilder();
-		query.append("/* LedgerRepository.insertBasicLedger */");
-		query.append("INSERT INTO LEDGER(USER_NO, LED_TP_CD, LED_NM, USE_YN, AMOUNT, SAVE_YN, LED_RMK, INS_DTTM, UPT_DTTM)");
+		query.append("/* LedgerRepository.insertLedger */");
+		query.append("INSERT INTO LEDGER(USER_NO, LED_TP_CD, LED_NM, USE_YN, AMOUNT, LED_RMK, INS_DTTM, UPT_DTTM)");
 		query.append(this.VALUES).append(this.LEFT_PARENTHESIS);
 		query.append(this.SINGLE_QUOTE).append(ledger.getUserNo()).append(this.SINGLE_QUOTE);
 		query.append(this.COMMA).append(this.SINGLE_QUOTE).append(ledger.getLedTpCd()).append(this.SINGLE_QUOTE);
 		query.append(this.COMMA).append(this.SINGLE_QUOTE).append(ledger.getLedNm()).append(this.SINGLE_QUOTE);
 		query.append(this.COMMA).append(this.N);
 		query.append(this.COMMA).append(0);
-		query.append(this.COMMA).append(this.N);
 		query.append(this.COMMA).append(this.SINGLE_QUOTE).append(ledger.getLedRmk()).append(this.SINGLE_QUOTE);
 		query.append(this.COMMA).append(this.NOW);
 		query.append(this.COMMA).append(this.NOW);
@@ -104,10 +103,5 @@ public class LedgerRepository extends CommonRepository{
 		
 		return client.sql(query.toString()).fetch().rowsUpdated();
 	}
-	
-	public Mono<Integer> updateBasicLedger(LedgerModel ledger){
-		return Mono.empty();
-	}
-
 }
 

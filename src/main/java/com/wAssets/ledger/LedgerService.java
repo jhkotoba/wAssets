@@ -33,14 +33,13 @@ public class LedgerService {
 		return ledgerRepository.selectLedgerList(ledger);
 	}
 	
+	/**
+	 * 장부저장
+	 * @param ledger
+	 * @return
+	 */
 	@Transactional
-	public Mono<Integer> appayBasicLedger(LedgerModel ledger) {
-		//저장
-		if(ledger.getLedIdx() == null) {
-			return ledgerRepository.insertBasicLedger(ledger);
-		//수정
-		}else {
-			return ledgerRepository.updateBasicLedger(ledger);
-		}
+	public Mono<Integer> registLedger(LedgerModel ledger) {
+		return ledgerRepository.insertLedger(ledger);
 	}
 }

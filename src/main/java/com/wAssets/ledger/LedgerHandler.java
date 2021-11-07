@@ -124,11 +124,11 @@ public class LedgerHandler {
 	}
 	
 	/**
-	 * 장부 기본정보 적용 (저장, 수정)
+	 * 장부저장
 	 * @param request
 	 * @return
 	 */
-	public Mono<ServerResponse> applyBasicLedger(ServerRequest request){
+	public Mono<ServerResponse> registLedger(ServerRequest request){
 		//응답모델
 		ResponseModel<LedgerModel> result = new ResponseModel<LedgerModel>();
 		
@@ -147,7 +147,7 @@ public class LedgerHandler {
 				//사용자번호 세팅
 				tuple.getT1().setUserNo(tuple.getT2().getUserNo());
 				//기본정보 저장
-				return ledgerService.appayBasicLedger(tuple.getT1());
+				return ledgerService.registLedger(tuple.getT1());
 			}).flatMap(count -> {
 				if(count > 0) {
 					//성공

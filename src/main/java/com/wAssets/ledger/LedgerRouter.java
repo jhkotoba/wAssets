@@ -26,8 +26,8 @@ public class LedgerRouter {
 			.andRoute(RequestPredicates.GET("/api/assets/getLedger")
 				.and(RequestPredicates.accept(MediaType.APPLICATION_JSON)), ledgerHandler::getLedger)
 			//장부 기본저장
-			.andRoute(RequestPredicates.POST("/api/assets/applyBasicLedger")
-				.and(RequestPredicates.accept(MediaType.APPLICATION_JSON)), ledgerHandler::applyBasicLedger);
+			.andRoute(RequestPredicates.POST("/api/assets/registLedger")
+				.and(RequestPredicates.accept(MediaType.APPLICATION_JSON)), ledgerHandler::registLedger);
 			
 	}
 }
